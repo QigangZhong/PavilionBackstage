@@ -1,4 +1,4 @@
-package com.pavilion.bean;
+package com.pavilion.domain;
 
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
