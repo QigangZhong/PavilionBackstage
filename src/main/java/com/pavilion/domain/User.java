@@ -15,27 +15,24 @@ public class User implements Serializable {
 
     private String nickname;
 
-    private Integer roleid;
+    private Integer roleId;
 
-    private String createtime;
+    private String createTime;
 
-    private String lastupdatetime;
-
-    private Integer isdeleted;
+    private String lastUpdateTime;
 
     private static final long serialVersionUID = 1L;
 
-    public User(Integer id, String username, String password, String mobile, String email, String nickname, Integer roleid, String createtime, String lastupdatetime, Integer isdeleted) {
+    public User(Integer id, String username, String password, String mobile, String email, String nickname, Integer roleId, String createTime, String lastUpdateTime) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.mobile = mobile;
         this.email = email;
         this.nickname = nickname;
-        this.roleid = roleid;
-        this.createtime = createtime;
-        this.lastupdatetime = lastupdatetime;
-        this.isdeleted = isdeleted;
+        this.roleId = roleId;
+        this.createTime = createTime;
+        this.lastUpdateTime = lastUpdateTime;
     }
 
     public User() {
@@ -90,35 +87,27 @@ public class User implements Serializable {
         this.nickname = nickname == null ? null : nickname.trim();
     }
 
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
-    public String getCreatetime() {
-        return createtime;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime == null ? null : createTime.trim();
     }
 
-    public String getLastupdatetime() {
-        return lastupdatetime;
+    public String getLastUpdateTime() {
+        return lastUpdateTime;
     }
 
-    public void setLastupdatetime(String lastupdatetime) {
-        this.lastupdatetime = lastupdatetime == null ? null : lastupdatetime.trim();
-    }
-
-    public Integer getIsdeleted() {
-        return isdeleted;
-    }
-
-    public void setIsdeleted(Integer isdeleted) {
-        this.isdeleted = isdeleted;
+    public void setLastUpdateTime(String lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime == null ? null : lastUpdateTime.trim();
     }
 }

@@ -10,14 +10,14 @@ public interface UserMapper {
     @Delete("delete from user where id=#{id}")
     int deleteByPrimaryKey(Integer id);
 
-    @Insert("insert into user (username, password, mobile, email, nickname, roleid, createtime, lastupdatetime, isdeleted)\n" +
-            "VALUES (#{username},#{password},#{mobile},#{email},#{nickname},#{roleid},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0)")
+    @Insert("insert into user (username, password, mobile, email, nickname, role_id, create_time, last_update_time)\n" +
+            "VALUES (#{username},#{password},#{mobile},#{email},#{nickname},#{roleId},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'))")
     int insert(User record);
 
     @Select("select * from user where id=#{id}")
     User selectByPrimaryKey(Integer id);
 
     @Update("update user set username=#{username},password=#{password},mobile=#{mobile},email=#{email},nickname=#{nickname}," +
-            "roleid=#{roleid},createtime=datetime(CURRENT_TIMESTAMP,'localtime'),lastupdatetime=datetime(CURRENT_TIMESTAMP,'localtime'),isdeleted=#{isdeleted}")
+            "role_id=#{roleId},create_time=datetime(CURRENT_TIMESTAMP,'localtime'),last_update_time=datetime(CURRENT_TIMESTAMP,'localtime')")
     int updateByPrimaryKey(User record);
 }

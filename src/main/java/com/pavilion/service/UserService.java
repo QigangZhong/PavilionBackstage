@@ -5,12 +5,7 @@ import com.pavilion.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserService {
-    @Autowired
-    UserMapper userMapper;
+public interface UserService {
 
-    public User getUserById(int id){
-        return userMapper.selectByPrimaryKey(id);
-    }
+    User getUserById(int id);
 }
