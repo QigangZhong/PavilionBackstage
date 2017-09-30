@@ -38,4 +38,7 @@ public interface UserMapper {
             @Result(property = "lastUpdateTime", column = "last_update_time")
     })
     User getLoginUser(String userName);
+
+    @Update("update user set password=#{password},last_update_time=datetime(CURRENT_TIMESTAMP,'localtime') where id=#{id}")
+    int updatePwd(@Param("id") Integer id, @Param("password") String newPwd);
 }

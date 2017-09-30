@@ -33,4 +33,23 @@ $(function () {
             });
         });
     });
+
+    $("#editPwdBtn").click(function () {
+        $.get("/user/editPwd",function (data) {
+            layer.open({
+                type: 1,
+                title:"修改密码",
+                content: data
+            });
+        });
+    });
+    $("#findPwdBtn").click(function () {
+        $.get("/user/findPwd",function (data) {
+            layer.open({
+                type: 1,
+                title:"找回密码",
+                content: data
+            });
+        });
+    });
 });

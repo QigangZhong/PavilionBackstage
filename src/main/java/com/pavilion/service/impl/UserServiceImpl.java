@@ -40,4 +40,12 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.updateByPrimaryKey(user);
     }
+
+    @Override
+    public int updatePwd(Integer id, String newPwd) {
+        if(newPwd.length()!=32){
+            newPwd=MD5Util.encode(newPwd);
+        }
+        return userMapper.updatePwd(id,newPwd);
+    }
 }

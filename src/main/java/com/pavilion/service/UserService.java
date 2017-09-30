@@ -16,4 +16,6 @@ public interface UserService {
     int insert(User user);
 
     int updateUser(User user);
+
+    int updatePwd(Integer id, String newPwd);
 }

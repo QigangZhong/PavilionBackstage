@@ -23,11 +23,8 @@
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item"><a href="">用户管理</a></li>
             <li class="layui-nav-item">
-                <a href="javascript:;">用户管理</a>
+                <a href="javascript:;">高级功能</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">用户查询</a></dd>
-                    <dd><a href="">用户添加</a></dd>
-                    <dd><a href="">用户修改</a></dd>
                     <dd><a href="">权限配置</a></dd>
                 </dl>
             </li>
@@ -44,6 +41,8 @@
                 </a>
                 <dl class="layui-nav-child">
                     <dd id="profileBtn"><a href="javascript:;">基本资料</a></dd>
+                    <dd id="editPwdBtn"><a href="javascript:;">密码修改</a></dd>
+                    <dd id="findPwdBtn"><a href="javascript:;">密码找回</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item" id="logoutbtn"><a href="javascript:;">退出</a></li>
@@ -68,7 +67,6 @@
                         <dd id="menu3"><a href="javascript:;">用户查询</a></dd>
                         <dd id="menu4"><a href="javascript:;">用户添加</a></dd>
                         <dd id="menu5"><a href="javascript:;">用户修改</a></dd>
-                        <dd id="menu6"><a href="javascript:;">权限配置</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -88,7 +86,6 @@
 <script src="layui/layui.js" charset="utf-8"></script>
 <script src="js/jquery.min.js" type="text/javascript"></script>
 <script src="js/home.js" type="text/javascript"></script>
-<script src="js/profile.js" type="text/javascript"></script>
 <script>
     //JavaScript代码区域
     layui.use('element', function () {

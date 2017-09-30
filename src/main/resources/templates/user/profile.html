@@ -1,8 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-
-
-<div>
+<div xmlns:th="http://www.w3.org/1999/xhtml">
     <form class="layui-form" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">用户名：</label>
@@ -42,5 +38,34 @@
     </form>
 </div>
 
-</body>
-</html>
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formProfile)', function(data){
+            var userName=data.field.username;
+            var mobile=data.field.mobile;
+            var email=data.field.email;
+            var nickname=data.field.nickname;
+
+            layer.prompt({
+                formType: 1,
+                value: '',
+                title: '请输入密码'
+            }, function(value, index, elem){
+                var password=value;
+                $.post("/user/updateProfile",{userName:userName,password:password,mobile:mobile,email:email,nickname:nickname},function (result) {
+                    if(0!=result.code){
+                        layer.msg(result.msg);
+                        return false;
+                    }
+                    layer.msg(result.msg);
+                });
+                layer.close(index);
+            });
+
+            return false;
+        });
+    });
+</script>
