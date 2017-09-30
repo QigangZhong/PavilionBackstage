@@ -20,4 +20,7 @@ public interface UserMapper {
     @Update("update user set username=#{username},password=#{password},mobile=#{mobile},email=#{email},nickname=#{nickname}," +
             "role_id=#{roleId},create_time=datetime(CURRENT_TIMESTAMP,'localtime'),last_update_time=datetime(CURRENT_TIMESTAMP,'localtime')")
     int updateByPrimaryKey(User record);
+
+    @Select("select * from user where username=#{userName} LIMIT 0,1")
+    User getUserByUserName(String userName);
 }

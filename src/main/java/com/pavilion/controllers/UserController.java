@@ -1,5 +1,6 @@
 package com.pavilion.controllers;
 
+import com.pavilion.domain.Result;
 import com.pavilion.domain.User;
 import com.pavilion.service.UserService;
 import org.slf4j.Logger;
@@ -32,20 +33,26 @@ public class UserController {
 
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(HttpServletRequest request){
+    public Result<String> login(HttpServletRequest request){
+        Result<String> result=new Result<String>();
+
         String userName = request.getParameter("userName");
         String password = request.getParameter("password");
         logger.info("user is trying to login, username:"+userName+" password:"+password);
 
-        User user=new User();
-        user.setId(2);
-        user.setUsername("zhangsan");
-        user.setPassword("123456");
+        User user=userService.getUserByUserName(userName);
+        if(user==null){
+            return Result.fail(-1,"用户不存在","");
+        }
+
+        if(!password.equals(user.getPassword())){
+            return Result.fail(-1,"密码不正确","");
+        }
 
         HttpSession session = request.getSession();
         session.setAttribute("user",user);
 
-        return "success";
+        return Result.success("登陆成功","");
     }
 
     @RequestMapping(value = "/user/logout", method = RequestMethod.GET)

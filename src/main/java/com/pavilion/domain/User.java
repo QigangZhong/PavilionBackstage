@@ -88,7 +88,7 @@ public class User implements Serializable {
     }
 
     public Integer getRoleId() {
-        return roleId;
+        return roleId==null?0:roleId;
     }
 
     public void setRoleId(Integer roleId) {
