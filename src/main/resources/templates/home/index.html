@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
@@ -13,6 +13,7 @@
 
     <!--<link rel="stylesheet" href="//res.layui.com/layui/dist/css/layui.css?t=1506667299881" media="all"></link>-->
     <link rel="stylesheet" href="layui/css/layui.css" media="all"></link>
+    <link rel="stylesheet" href="css/home.css" media="all"></link>
 </head>
 
 <body class="layui-layout-body">
@@ -33,18 +34,22 @@
                 </dl>
             </li>
         </ul>
-        <ul class="layui-nav layui-layout-right">
+
+        <ul th:if="${session==null || session.user == null}" class="layui-nav layui-layout-right">
+            <li id="loginbtn" class="layui-nav-item"><a href="javascript:;">登陆</a></li>
+        </ul>
+        <ul th:if="${session.user != null}" class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img" />
-                    贤心
+                    <span th:text="${session.user.username}"></span>
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="">基本资料</a></dd>
-                    <dd><a href="">安全设置</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="">退了</a></li>
+            <li class="layui-nav-item" id="logoutbtn"><a href="javascript:;">退了</a></li>
+
         </ul>
     </div>
 
@@ -80,6 +85,9 @@
     //JavaScript代码区域
     layui.use('element', function () {
         var element = layui.element;
+
+    });
+    layui.use('layer', function () {
 
     });
 </script>
