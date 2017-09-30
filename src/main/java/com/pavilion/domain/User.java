@@ -15,6 +15,8 @@ public class User implements Serializable {
 
     private String nickname;
 
+    private String avatar;
+
     private Integer roleId;
 
     private String createTime;
@@ -85,6 +87,14 @@ public class User implements Serializable {
 
     public void setNickname(String nickname) {
         this.nickname = nickname == null ? null : nickname.trim();
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public Integer getRoleId() {

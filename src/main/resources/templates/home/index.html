@@ -11,9 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="format-detection" content="telephone=no"/>
 
-    <!--<link rel="stylesheet" href="//res.layui.com/layui/dist/css/layui.css?t=1506667299881" media="all"></link>-->
     <link rel="stylesheet" href="layui/css/layui.css" media="all"></link>
-    <link rel="stylesheet" href="css/home.css" media="all"></link>
 </head>
 
 <body class="layui-layout-body">
@@ -22,15 +20,14 @@
         <div class="layui-logo">Pavilion Backstage</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">控制台</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item"><a href="">用户管理</a></li>
             <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
+                <a href="javascript:;">用户管理</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
+                    <dd><a href="">用户查询</a></dd>
+                    <dd><a href="">用户添加</a></dd>
+                    <dd><a href="">用户修改</a></dd>
+                    <dd><a href="">权限配置</a></dd>
                 </dl>
             </li>
         </ul>
@@ -45,7 +42,7 @@
                     <span th:text="${session.user.username}"></span>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">基本资料</a></dd>
+                    <dd id="profileBtn"><a href="javascript:;">基本资料</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item" id="logoutbtn"><a href="javascript:;">退了</a></li>
@@ -64,6 +61,15 @@
                         <dd id="menu2"><a href="javascript:;">多文件上传</a></dd>
                     </dl>
                 </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd id="menu3"><a href="javascript:;">用户查询</a></dd>
+                        <dd id="menu4"><a href="javascript:;">用户添加</a></dd>
+                        <dd id="menu5"><a href="javascript:;">用户修改</a></dd>
+                        <dd id="menu6"><a href="javascript:;">权限配置</a></dd>
+                    </dl>
+                </li>
             </ul>
         </div>
     </div>
@@ -77,11 +83,10 @@
         www.pavilionintegration.com
     </div>
 </div>
-<!--<script src="//res.layui.com/layui/src/layui.js?t=1506667299881" charset="utf-8"></script>-->
+
 <script src="layui/layui.js" charset="utf-8"></script>
 <script src="js/jquery.min.js" type="text/javascript"></script>
 <script src="js/home.js" type="text/javascript"></script>
-<script src="js/login.js" type="text/javascript"></script>
 <script>
     //JavaScript代码区域
     layui.use('element', function () {
@@ -89,10 +94,9 @@
 
     });
     layui.use('layer', function () {
-
+        var layer=layui.layer;
     });
+
 </script>
-<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-document.write(unescape("%3Cspan id='cnzz_stat_icon_30088308'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D30088308' type='text/javascript'%3E%3C/script%3E"));</script>
 </body>
 </html>

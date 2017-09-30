@@ -11,12 +11,13 @@ create table user
   mobile varchar(20),
   email varchar(128),
   nickname nvarchar(50),
+  avatar varchar(256),
   role_id int not null DEFAULT 0,
   create_time datetime,
   last_update_time datetime
 );
-insert into user (username, password, mobile, email, nickname, role_id, create_time, last_update_time)
-VALUES ('zhongqigang','zqg261607','13057271932','zhongqigang@benlai.com','刚子',1,
+insert into user (username, password, mobile, email, nickname,avatar, role_id, create_time, last_update_time)
+VALUES ('zhongqigang','81a5678baf55573f32cfb98577ec7772','13057271932','zhongqigang@benlai.com','刚子','http://t.cn/RCzsdCq',1,
         datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
 
 create table role

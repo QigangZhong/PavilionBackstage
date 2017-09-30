@@ -3,6 +3,7 @@ package com.pavilion.service.impl;
 import com.pavilion.dao.UserMapper;
 import com.pavilion.domain.User;
 import com.pavilion.service.UserService;
+import com.pavilion.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +19,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUserName(String userName) {
         return userMapper.getUserByUserName(userName);
+    }
+
+    @Override
+    public User getLoginUser(String userName) {
+        return userMapper.getLoginUser(userName);
+    }
+
+    @Override
+    public int insert(User user) {
+        return userMapper.insert(user);
+    }
+
+    @Override
+    public int updateUser(User user) {
+        String pwd=user.getPassword();
+        user.setPassword(MD5Util.encode(pwd));
+        return userMapper.updateByPrimaryKey(user);
     }
 }

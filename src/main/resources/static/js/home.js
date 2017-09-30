@@ -24,4 +24,7 @@ $(function () {
             }
         });
     });
+    $("#profileBtn").click(function () {
+
+    });
 });
