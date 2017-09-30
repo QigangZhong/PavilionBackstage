@@ -11,8 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="PavilionBackstage" target="1.6" />
-      <module name="SpringBootDemo" target="1.8" />
+      <module name="PavilionBackstage" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

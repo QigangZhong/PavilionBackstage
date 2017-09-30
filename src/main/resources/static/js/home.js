@@ -11,7 +11,7 @@ $(function () {
             layer.open({
                 type: 1,
                 title:"请登录",
-                content: data //注意，如果str是object，那么需要字符拼接。
+                content: data
             });
         });
     });
@@ -25,6 +25,12 @@ $(function () {
         });
     });
     $("#profileBtn").click(function () {
-
+        $.get("/user/profile",function (data) {
+            layer.open({
+                type: 1,
+                title:"个人信息",
+                content: data
+            });
+        });
     });
 });

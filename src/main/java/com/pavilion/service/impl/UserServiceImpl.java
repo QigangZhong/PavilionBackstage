@@ -34,7 +34,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updateUser(User user) {
         String pwd=user.getPassword();
-        user.setPassword(MD5Util.encode(pwd));
+        if(pwd.length()!=32){
+            user.setPassword(MD5Util.encode(pwd));
+        }
+
         return userMapper.updateByPrimaryKey(user);
     }
 }

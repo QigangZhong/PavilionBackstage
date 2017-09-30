@@ -3,6 +3,7 @@ package com.pavilion.controllers;
 import com.pavilion.domain.ErrorCode;
 import com.pavilion.domain.Result;
 import com.pavilion.domain.User;
+import com.pavilion.service.RoleService;
 import com.pavilion.service.UserService;
 import com.pavilion.util.MD5Util;
 import org.slf4j.Logger;
@@ -16,6 +17,9 @@ import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.time.LocalDateTime;
 
 @Controller
 public class UserController {
@@ -23,6 +27,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    RoleService roleService;
 
     @RequestMapping("/user/getUserNameById")
     public String getUserNameById(){
@@ -69,13 +75,13 @@ public class UserController {
         return "ok";
     }
 
-
     @RequestMapping(value="/user/add", method = RequestMethod.GET)
     public String add(){
         return "add";
     }
 
     @RequestMapping(value="/user/add", method = RequestMethod.POST)
+    @ResponseBody
     public Result<String> add(User user){
         if(user==null){
             return Result.parameterError();
@@ -93,14 +99,13 @@ public class UserController {
         return Result.success("添加成功","");
     }
 
-
-
     @RequestMapping(value="/user/update", method = RequestMethod.GET)
     public String update(){
         return "update";
     }
 
     @RequestMapping(value="/user/update", method = RequestMethod.POST)
+    @ResponseBody
     public Result<String> update(User user){
         if(user==null){
             return Result.parameterError();
@@ -119,7 +124,43 @@ public class UserController {
     }
 
     @RequestMapping(value="/user/profile", method = RequestMethod.GET)
-    public String profile(){
-        return "profile";
+    public String profile(HttpServletRequest request,Map map){
+        User user=(User) request.getSession().getAttribute("user");
+        map.put("username",user.getUsername());
+        map.put("mobile",user.getMobile());
+        map.put("email",user.getEmail());
+        map.put("nickname",user.getNickname());
+
+        String roleName=roleService.getRoleNameById(user.getRoleId());
+        map.put("roleName",roleName);
+
+        return "user/profile";
+    }
+
+    @RequestMapping(value="/user/updateProfile", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<String> updateProfile(HttpServletRequest request,String userName,String password,String mobile,String email,String nickname){
+        User user=(User) request.getSession().getAttribute("user");
+        if(user==null || user.getId()<=0){
+            return Result.fail(-1,"修改失败","");
+        }
+
+        User userInDb=userService.getUserById(user.getId());
+        if(!MD5Util.encode(password).equals(userInDb.getPassword())){
+            return Result.fail(-1,"修改失败, 密码不正确","");
+        }
+
+        userInDb.setUsername(userName);
+        userInDb.setMobile(mobile);
+        userInDb.setEmail(email);
+        userInDb.setNickname(nickname);
+        userInDb.setLastUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        int row = userService.updateUser(userInDb);
+        if(row>0){
+            request.getSession().setAttribute("user",userInDb);
+        }
+
+        return Result.success("修改成功","");
     }
 }
