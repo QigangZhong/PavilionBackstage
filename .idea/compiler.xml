@@ -10,8 +10,8 @@
         <module name="SpringBootDemo" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="PavilionBackstage" target="1.6" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="PavilionBackstage" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
