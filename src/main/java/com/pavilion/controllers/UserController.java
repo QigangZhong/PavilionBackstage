@@ -2,6 +2,7 @@ package com.pavilion.controllers;
 
 import com.pavilion.domain.ErrorCode;
 import com.pavilion.domain.Result;
+import com.pavilion.domain.Role;
 import com.pavilion.domain.User;
 import com.pavilion.service.MailService;
 import com.pavilion.service.RoleService;
@@ -21,6 +22,7 @@ import org.thymeleaf.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.time.LocalDateTime;
 
@@ -136,8 +138,12 @@ public class UserController {
         map.put("email",user.getEmail());
         map.put("nickname",user.getNickname());
 
-        String roleName=roleService.getRoleNameById(user.getRoleId());
-        map.put("roleName",roleName);
+        List<Role> roles=roleService.getRolesByUserId(user.getId());
+        StringBuilder roleNames =new StringBuilder();
+        for (Role role: roles ) {
+            roleNames.append(role.getName()+",");
+        }
+        map.put("roleName",roleNames.toString().substring(0,roleNames.toString().length()-1));
 
         return "user/profile";
     }

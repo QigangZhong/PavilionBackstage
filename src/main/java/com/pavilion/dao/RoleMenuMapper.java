@@ -7,15 +7,10 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 public interface RoleMenuMapper {
-    int deleteByPrimaryKey(Integer id);
-
     int insert(RoleMenu record);
 
-    RoleMenu selectByPrimaryKey(Integer id);
+    int insertSelective(RoleMenu record);
 
-    int updateByPrimaryKey(RoleMenu record);
-
-    @Select("select * from role_menu where role_id=#{roleId} and menu_id=#{menuId}")
-    List<RoleMenu> selectByRoleIdAndMenuId(@Param("roleId") int roleId, @Param("menuId") int menuId);
-
+    @Select("select rm.* from role_menu rm join user_role ur on rm.role_id=ur.role_id where rm.menu_id=#{menuId} and ur.user_id=#{userId}")
+    List<RoleMenu> selectByUserIdAndMenuId(@Param("userId") int roleId, @Param("menuId") int menuId);
 }

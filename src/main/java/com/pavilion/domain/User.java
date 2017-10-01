@@ -17,8 +17,6 @@ public class User implements Serializable {
 
     private String avatar;
 
-    private Integer roleId;
-
     private String createTime;
 
     private String lastUpdateTime;
@@ -32,7 +30,6 @@ public class User implements Serializable {
         this.mobile = mobile;
         this.email = email;
         this.nickname = nickname;
-        this.roleId = roleId;
         this.createTime = createTime;
         this.lastUpdateTime = lastUpdateTime;
     }
@@ -95,14 +92,6 @@ public class User implements Serializable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public Integer getRoleId() {
-        return roleId==null?0:roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
     }
 
     public String getCreateTime() {

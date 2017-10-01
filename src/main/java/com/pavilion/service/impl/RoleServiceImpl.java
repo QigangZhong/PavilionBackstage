@@ -6,14 +6,15 @@ import com.pavilion.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoleServiceImpl implements RoleService {
     @Autowired
     RoleMapper roleMapper;
 
     @Override
-    public String getRoleNameById(int id) {
-        Role role=roleMapper.selectByPrimaryKey(id);
-        return role.getName();
+    public List<Role> getRolesByUserId(int userId) {
+        return roleMapper.getRolesByUserId(userId);
     }
 }

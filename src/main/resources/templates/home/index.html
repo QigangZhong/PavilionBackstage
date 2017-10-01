@@ -20,8 +20,8 @@
     <div class="layui-header">
         <div class="layui-logo">Pavilion Backstage</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
-        <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">用户管理</a></li>
+        <ul id="left" class="layui-nav layui-layout-left">
+            <li id="hideLeft" class="layui-nav-item"><a href="javascript:;">隐藏侧边栏</a></li>
             <li class="layui-nav-item">
                 <a href="javascript:;">高级功能</a>
                 <dl class="layui-nav-child">
@@ -67,6 +67,12 @@
                         <dd id="menu3"><a href="javascript:;">用户查询</a></dd>
                         <dd id="menu4"><a href="javascript:;">用户添加</a></dd>
                         <dd id="menu5"><a href="javascript:;">用户修改</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">高级</a>
+                    <dl class="layui-nav-child">
+                        <dd id="menu6"><a href="javascript:;">权限管理</a></dd>
                     </dl>
                 </li>
             </ul>
