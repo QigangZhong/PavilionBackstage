@@ -48,6 +48,10 @@ public class UserController {
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
     @ResponseBody
     public Result<String> login(HttpServletRequest request){
+        logger.debug("debug 尝试登陆");
+        logger.info("info 尝试登陆");
+        logger.error("error 尝试登陆");
+
         Result<String> result=new Result<String>();
 
         String userName = request.getParameter("userName");
