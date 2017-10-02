@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>添加用户</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/css/common.css">
+
+    <script src="/js/jquery.min.js" ></script>
+    <!--<script type="text/javascript">-->
+        <!--//让该页面在iframe中展示时,iframe的高度能自适应-->
+        <!--$(function () {-->
+            <!--var h=document.body.scrollHeight;-->
+            <!--parent.document.getElementById("queryUser").style.height=h+"px";-->
+        <!--});-->
+    <!--</script>-->
+</head>
+<body>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="username" required  lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="mobile" required  lay-verify="required" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="email" required  lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">昵称：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="nickname"  placeholder="请输入昵称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色：</label>
+        <div class="layui-input-block" th:each="role:${roles}">
+            <input type="checkbox" name="role" th:title="${role.name}" th:value="${role.id}"><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin=""><span>写作</span><i class="layui-icon"></i></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formAddUser" style="width:150px;">添加</button>
+        </div>
+    </div>
+</form>
+
+<script src="/layui/layui.js" charset="utf-8"></script>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formAddUser)', function(data){
+            var userName=data.field.username;
+            var mobile=data.field.mobile;
+            var email=data.field.email;
+            var nickname=data.field.nickname;
+            var roles="";
+
+            $("input[name='role']:checked").each(function (index,value) {
+                roles+=value.value+",";
+            });
+            if(roles.length>0){
+                roles=roles.substring(0,roles.length-1);
+            }
+
+
+            $.post("/user/add",{username:userName,mobile:mobile,email:email,nickname:nickname,roles:roles},function (result) {
+                if(0!=result.code){
+                    layer.msg(result.msg,{offset:"10px"});
+                    return false;
+                }
+                layer.msg(result.msg,{offset:"10px"});
+            });
+
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -30,6 +30,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insert(User user) {
+        String pwd=user.getPassword();
+        if(pwd.length()!=32){
+            user.setPassword(MD5Util.encode(pwd));
+        }
+
         return userMapper.insert(user);
     }
 
@@ -76,5 +81,10 @@ public class UserServiceImpl implements UserService {
     public List<User> getSearchPagedUsers(int page, int limit, String searchKey) {
         int offset=limit*(page-1);
         return userMapper.getSearchPagedUsers(offset, limit, searchKey);
+    }
+
+    @Override
+    public User getExistUser(String username, String mobile, String email) {
+        return userMapper.getExistUser(username,mobile,email);
     }
 }

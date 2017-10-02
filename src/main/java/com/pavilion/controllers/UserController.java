@@ -14,6 +14,7 @@ import com.pavilion.service.UserRoleService;
 import com.pavilion.service.UserService;
 import com.pavilion.util.MD5Util;
 import com.pavilion.util.PasswordUtil;
+import com.pavilion.util.ValidateUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -93,27 +94,68 @@ public class UserController {
     }
 
     @RequestMapping(value="/user/add", method = RequestMethod.GET)
-    public String add(){
-        return "add";
+    public String add(Model model){
+        List<Role> roles = roleService.getAll();
+
+        model.addAttribute("roles",roles);
+        return "user/add";
     }
 
     @RequestMapping(value="/user/add", method = RequestMethod.POST)
     @ResponseBody
-    public Result<String> add(User user){
+    public Result<String> add(User user,String roles){
         if(user==null){
             return Result.parameterError();
         }
 
-        if(StringUtils.isEmptyOrWhitespace(user.getUsername()) || StringUtils.isEmptyOrWhitespace(user.getPassword())){
-            return Result.fail(ErrorCode.Error.getCode(),"用户名或者密码不能为空","");
+        if(StringUtils.isEmptyOrWhitespace(user.getUsername()) || StringUtils.isEmptyOrWhitespace(user.getMobile())|| StringUtils.isEmptyOrWhitespace(user.getEmail())){
+            return Result.fail(ErrorCode.Error.getCode(),"不能为空","");
         }
 
+        if(user.getUsername().length()<8 || user.getUsername().length()>16){
+            return Result.fail("用户名长度建议8-16之间");
+        }
+
+        if(!ValidateUtil.isMobileNumber(user.getMobile()) || !ValidateUtil.isEmailAddress(user.getEmail())){
+            return Result.fail("手机号或邮箱地址不正确");
+        }
+
+        String pwd=PasswordUtil.getRandomPassword(8);
+        user.setPassword(pwd);
+        user.setAvatar("http://www.gravatar.com/avatar/");
+
+        User existUser=userService.getExistUser(user.getUsername(),user.getMobile(),user.getEmail());
+        if(existUser!=null){
+            return Result.fail("添加失败,用户名、手机号或者邮箱已存在");
+        }
+
+        //创建用户
         int result=userService.insert(user);
-        if(result!=1){
+        if(result<=0){
             return Result.fail(ErrorCode.Error.getCode(),"添加用户失败","");
         }
 
-        return Result.success("添加成功","");
+        //关联角色
+        User thisUser=userService.getUserByUserName(user.getUsername());
+        userRoleService.deleteByUserId(thisUser.getId());
+        if (roles.length()>0){
+            String[] strRoles=roles.split(",");
+            for (int i = 0; i <strRoles.length ; i++) {
+                int roleId=Integer.parseInt(strRoles[i]);
+                int row = userRoleService.insert(thisUser.getId(),roleId);
+            }
+        }
+
+        try {
+            //给新用户发密码邮件
+            mailService.Send(user.getEmail(), "请查收PavilionBackstage密码", "您的初始密码为" + pwd);
+        }catch (Exception ex)
+        {
+            logger.error(ex.getStackTrace().toString());
+            return Result.fail(-1,"用户注册成功,但密码通知邮件发送失败");
+        }
+
+        return Result.success("添加成功,初始密码已发送至用户邮箱","");
     }
 
     @RequestMapping(value="/user/update", method = RequestMethod.GET)
@@ -322,5 +364,20 @@ public class UserController {
             return Result.fail("删除失败");
         }
         return Result.success("删除成功","");
+    }
+
+
+
+    @RequestMapping(value="/user/editRole", method = RequestMethod.GET)
+    public String editRole(int userId){
+        return "user/editRole";
+    }
+
+    @RequestMapping(value="/user/editRole", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<String> editRole(int userId,int[] roleIds){
+
+
+        return Result.success("修改成功","");
     }
 }

@@ -17,4 +17,7 @@ public interface RoleMapper {
 
     @Select("select r.* from role r join user_role ur on r.id=ur.role_id where ur.user_id=#{userId}")
     List<Role> getRolesByUserId(int userId);
+
+    @Select("select * from role")
+    List<Role> getAll();
 }

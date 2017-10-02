@@ -30,4 +30,6 @@ public interface UserService {
     int getSearchUserCount(String searchKey);
 
     List<User> getSearchPagedUsers(int page, int limit, String searchKey);
+
+    User getExistUser(String username, String mobile, String email);
 }

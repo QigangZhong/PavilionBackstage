@@ -66,4 +66,7 @@ public interface UserMapper {
             "nickname like '%' || #{searchKey} || '%' " +
             "limit #{offset},#{limit}")
     List<User> getSearchPagedUsers(@Param("offset")int offset, @Param("limit") int limit, @Param("searchKey")String searchKey);
+
+    @Select("select * from user where username=#{username} or mobile=#{mobile} or email=#{email} limit 0,1")
+    User getExistUser(@Param("username") String username, @Param("mobile") String mobile, @Param("email") String email);
 }
