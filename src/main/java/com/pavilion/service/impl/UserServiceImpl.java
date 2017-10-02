@@ -7,6 +7,8 @@ import com.pavilion.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -47,5 +49,32 @@ public class UserServiceImpl implements UserService {
             newPwd=MD5Util.encode(newPwd);
         }
         return userMapper.updatePwd(id,newPwd);
+    }
+
+    @Override
+    public List<User> getPagedUsers(int page, int limit) {
+        int offset=limit*(page-1);
+        return userMapper.getPagedUsers(offset,limit);
+    }
+
+    @Override
+    public int getUserCount() {
+        return userMapper.getUserCount();
+    }
+
+    @Override
+    public int deleteUser(int userId) {
+        return userMapper.deleteByPrimaryKey(userId);
+    }
+
+    @Override
+    public int getSearchUserCount(String searchKey) {
+        return userMapper.getSearchUserCount(searchKey);
+    }
+
+    @Override
+    public List<User> getSearchPagedUsers(int page, int limit, String searchKey) {
+        int offset=limit*(page-1);
+        return userMapper.getSearchPagedUsers(offset, limit, searchKey);
     }
 }

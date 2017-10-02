@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>查询用户数据</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/css/common.css">
+
+    <script src="/js/jquery.min.js" ></script>
+    <script type="text/javascript">
+        //让该页面在iframe中展示时,iframe的高度能自适应
+        $(function () {
+            var h=document.body.scrollHeight;
+            parent.document.getElementById("queryUser").style.height=h+"px";
+        });
+    </script>
+</head>
+<body>
+
+<!--<div class="layui-btn-group demoTable">
+    <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
+    <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
+    <button class="layui-btn" data-type="isAll">验证是否全选</button>
+</div>-->
+
+<div class="demoTable">
+    <div class="layui-inline">
+        <input class="layui-input" name="searchKey" id="searchKey" autocomplete="off">
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+</div>
+
+<table id="userTable" lay-filter="userTableFilter">
+</table>
+
+<script type="text/html" id="userOp">
+    <!--<a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>-->
+    <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+</script>
+<script src="/layui/layui.js" charset="utf-8"></script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            id:'userTableId',
+            elem:'#userTable',
+            url:'/user/queryUsers',
+            //height:500,
+            width:836,
+            page:true,
+            limits: [10,20,50,100],
+            limit:10,
+            loading:true,
+            cols:  [[ //标题栏
+                {checkbox: true, fixed:true},
+                {field: 'id', title: 'ID', width: 60, sort:true, fixed:true},
+                {field: 'username', title: '用户名', width: 120},
+                {field: 'mobile', title: '手机号', width: 120},
+                {field: 'email', title: '邮箱', width: 200},
+                {field: 'nickname', title: '昵称', width: 120},
+                {fixed: 'right', align: 'center', width: 160, toolbar:"#userOp"}
+            ]]
+        });
+
+        //监听工具条
+        table.on('tool(userTableFilter)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'detail'){ //查看
+                alert(data);
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么',{offset:'10px'}, function(index){
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    $.post("/user/deleteUser",{userId:data.id},function (data) {
+                        layer.msg(data.msg,{offset:'10px'});
+                    });
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                $.get("/user/modifyUser?userId="+data.id,function (data) {
+                    layer.open({
+                        type: 1,
+                        offset: '10px',
+                        title:"用户信息修改",
+                        content: data,
+                        cancel:function () {
+                            table.reload("userTableId")
+                        }
+                    });
+                });
+
+//
+//                //同步更新缓存对应的值
+//                obj.update({
+//                    username: '123'
+//                    ,title: 'xxx'
+//                });
+            }
+        });
+
+        //checkbox事件
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('userTableId')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('userTableId')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('userTableId');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
+            }
+            ,reload: function(){
+                var searchKey = $('#searchKey');
+
+                table.reload('userTableId', {
+                    where: {
+                        searchKey: searchKey.val()
+                    }
+                });
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+</body>
+</html>

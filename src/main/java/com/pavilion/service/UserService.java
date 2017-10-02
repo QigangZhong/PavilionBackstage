@@ -5,6 +5,8 @@ import com.pavilion.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 public interface UserService {
 
     User getUserById(int id);
@@ -18,4 +20,14 @@ public interface UserService {
     int updateUser(User user);
 
     int updatePwd(Integer id, String newPwd);
+
+    List<User> getPagedUsers(int page,int limit);
+
+    int getUserCount();
+
+    int deleteUser(int userId);
+
+    int getSearchUserCount(String searchKey);
+
+    List<User> getSearchPagedUsers(int page, int limit, String searchKey);
 }

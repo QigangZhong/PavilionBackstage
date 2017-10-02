@@ -45,8 +45,20 @@ public class Result<T> {
         return new Result(0,msg,data);
     }
 
+    public static <T> Result<T> success(String msg){
+        return new Result(0,msg,null);
+    }
+
     public static <T> Result<T> fail(int code,String msg,T data){
         return new Result(code,msg,data);
+    }
+
+    public static <T> Result<T> fail(String msg){
+        return new Result(ErrorCode.Error.getCode(),msg,null);
+    }
+
+    public static <T> Result<T> fail(int code , String msg){
+        return new Result(code,msg,null);
     }
 
     public static <T> Result<T> parameterError(){

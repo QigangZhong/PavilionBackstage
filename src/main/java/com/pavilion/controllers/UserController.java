@@ -1,14 +1,21 @@
 package com.pavilion.controllers;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.pavilion.domain.ErrorCode;
 import com.pavilion.domain.Result;
 import com.pavilion.domain.Role;
 import com.pavilion.domain.User;
+import com.pavilion.domain.dto.TableData;
+import com.pavilion.domain.dto.UserDto;
 import com.pavilion.service.MailService;
 import com.pavilion.service.RoleService;
+import com.pavilion.service.UserRoleService;
 import com.pavilion.service.UserService;
 import com.pavilion.util.MD5Util;
 import com.pavilion.util.PasswordUtil;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +29,7 @@ import org.thymeleaf.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.time.LocalDateTime;
@@ -36,6 +44,8 @@ public class UserController {
     RoleService roleService;
     @Autowired
     MailService mailService;
+    @Autowired
+    UserRoleService userRoleService;
 
     @RequestMapping("/user/getUserNameById")
     public String getUserNameById(){
@@ -143,7 +153,10 @@ public class UserController {
         for (Role role: roles ) {
             roleNames.append(role.getName()+",");
         }
-        map.put("roleName",roleNames.toString().substring(0,roleNames.toString().length()-1));
+
+        if(roles.size()>0) {
+            map.put("roleName", roleNames.toString().substring(0, roleNames.toString().length() - 1));
+        }
 
         return "user/profile";
     }
@@ -226,5 +239,88 @@ public class UserController {
         mailService.Send(user.getEmail(),"Pavilion Backstage新密码","新密码为 "+newPwd);
 
         return Result.success("新密码已发送至您的邮箱","");
+    }
+
+    @RequestMapping(value="/user/query", method = RequestMethod.GET)
+    public String query(){
+        return "user/query";
+    }
+
+    @RequestMapping(value="/user/queryUsers", method = RequestMethod.GET)
+    @ResponseBody
+    public TableData<List<UserDto>> queryUsers(int page,int limit,String searchKey){
+        TableData<List<UserDto>> data=new TableData<List<UserDto>>();
+
+        int count=0;
+        List<UserDto> userDtos= new ArrayList<>();
+
+        if(StringUtils.isEmptyOrWhitespace(searchKey)) {
+            count = userService.getUserCount();
+            List<User> users = userService.getPagedUsers(page, limit);
+            userDtos = new ModelMapper().map(users, new TypeToken<List<UserDto>>() {
+            }.getType());
+        }else{
+            count = userService.getSearchUserCount(searchKey);
+            List<User> users = userService.getSearchPagedUsers(page, limit,searchKey);
+            userDtos = new ModelMapper().map(users, new TypeToken<List<UserDto>>() {
+            }.getType());
+        }
+
+        data.setCount(count);
+        data.setData(userDtos);
+        return data;
+    }
+
+    @RequestMapping(value="/user/modifyUser", method = RequestMethod.GET)
+    public String modifyUser(int userId,Map map){
+        User user=userService.getUserById(userId);
+        map.put("id",user.getId());
+        map.put("username",user.getUsername());
+        map.put("mobile",user.getMobile());
+        map.put("email",user.getEmail());
+        map.put("nickname",user.getNickname());
+
+        List<Role> roles=roleService.getRolesByUserId(user.getId());
+        StringBuilder roleNames =new StringBuilder();
+        for (Role role: roles ) {
+            roleNames.append(role.getName()+",");
+        }
+
+        if(roles.size()>0) {
+            map.put("roleName", roleNames.toString().substring(0, roleNames.toString().length() - 1));
+        }else{
+            map.put("roleName","匿名用户");
+        }
+
+        return "user/modifyUser";
+    }
+
+    @RequestMapping(value="/user/modifyUser", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<String> modifyUser(User user){
+        User userInDb=userService.getUserById(user.getId());
+        userInDb.setUsername(user.getUsername());
+        userInDb.setMobile(user.getMobile());
+        userInDb.setEmail(user.getEmail());
+        userInDb.setNickname(user.getNickname());
+        userInDb.setLastUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        int row = userService.updateUser(userInDb);
+        if(row>0){
+            return Result.success("修改成功","");
+        }else{
+            return Result.fail("修改失败");
+        }
+    }
+
+
+    @RequestMapping(value="/user/deleteUser", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<String> deleteUser(int userId){
+        int row = userService.deleteUser(userId);
+        if(row<=0){
+            return Result.fail("删除失败");
+        }
+        return Result.success("删除成功","");
     }
 }
