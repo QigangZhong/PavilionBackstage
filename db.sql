@@ -96,4 +96,17 @@ insert into material_price values(NULL ,1,2000,3.00,datetime(CURRENT_TIMESTAMP,'
 
 
 
+create table cost
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT ,
+  labor decimal(19,6), --人工
+  wear decimal(19,6), --耗损%
+  management decimal(19,6), --管理%
+  sale decimal(19,6), --销售%
+  create_time datetime,
+  last_update_time datetime
+);
+
+insert into cost values(null,200,3,10,10,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+
 

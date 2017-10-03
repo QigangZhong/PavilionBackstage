@@ -1,10 +1,13 @@
 package com.pavilion.controllers;
 
+import com.pavilion.model.Cost;
 import com.pavilion.model.Material;
 import com.pavilion.model.MaterialPrice;
+import com.pavilion.model.Result;
 import com.pavilion.model.dto.MaterialDto;
 import com.pavilion.model.dto.MaterialPriceDto;
 import com.pavilion.model.dto.TableData;
+import com.pavilion.service.CostService;
 import com.pavilion.service.MaterialPriceService;
 import com.pavilion.service.MaterialService;
 import org.modelmapper.ModelMapper;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -26,6 +30,8 @@ public class MaterialController {
     MaterialService materialService;
     @Autowired
     MaterialPriceService materialPriceService;
+    @Autowired
+    CostService costService;
 
     @RequestMapping(value = "/bomQuery", method= RequestMethod.GET)
     public String bomQuery(){
@@ -70,5 +76,24 @@ public class MaterialController {
         return data;
     }
 
+    @RequestMapping(value = "/calcWorkTime", method= RequestMethod.GET)
+    public String calcWorkTime(Model model){
+        Cost cost=costService.getFirst();
+        model.addAttribute("cost",cost);
+        return "material/calcWorkTime";
+    }
+    @RequestMapping(value = "/updateWorkTime", method= RequestMethod.POST)
+    @ResponseBody
+    public Result<String> updateWorkTime(Double labor, Double wear, Double management, Double sale){
 
+        Cost cost=costService.getFirst();
+        cost.setLabor(labor);
+        cost.setWear(wear);
+        cost.setManagement(management);
+        cost.setSale(sale);
+
+        costService.update(cost);
+
+        return Result.success("更新成功");
+    }
 }
