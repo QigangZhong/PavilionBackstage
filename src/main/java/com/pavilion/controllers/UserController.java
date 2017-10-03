@@ -1,13 +1,12 @@
 package com.pavilion.controllers;
 
-import com.pavilion.domain.ErrorCode;
-import com.pavilion.domain.Result;
-import com.pavilion.domain.Role;
-import com.pavilion.domain.User;
-import com.pavilion.domain.dto.PrivilegeDto;
-import com.pavilion.domain.dto.RoleDto;
-import com.pavilion.domain.dto.TableData;
-import com.pavilion.domain.dto.UserDto;
+import com.pavilion.model.ErrorCode;
+import com.pavilion.model.Result;
+import com.pavilion.model.Role;
+import com.pavilion.model.User;
+import com.pavilion.model.dto.RoleDto;
+import com.pavilion.model.dto.TableData;
+import com.pavilion.model.dto.UserDto;
 import com.pavilion.service.MailService;
 import com.pavilion.service.RoleService;
 import com.pavilion.service.UserRoleService;

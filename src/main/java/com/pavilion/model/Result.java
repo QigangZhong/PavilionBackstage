@@ -1,4 +1,4 @@
-package com.pavilion.domain;
+package com.pavilion.model;
 
 public class Result<T> {
     private int code;

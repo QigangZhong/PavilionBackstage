@@ -1,4 +1,4 @@
-package com.pavilion.domain;
+package com.pavilion.model;
 
 import java.io.Serializable;
 

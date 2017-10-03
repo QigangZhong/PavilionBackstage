@@ -1,6 +1,6 @@
 package com.pavilion.dao;
 
-import com.pavilion.domain.User;
+import com.pavilion.model.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

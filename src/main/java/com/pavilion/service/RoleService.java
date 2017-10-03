@@ -1,6 +1,6 @@
 package com.pavilion.service;
 
-import com.pavilion.domain.Role;
+import com.pavilion.model.Role;
 
 import java.util.List;
 

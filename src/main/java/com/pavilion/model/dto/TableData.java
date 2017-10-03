@@ -1,7 +1,4 @@
-package com.pavilion.domain.dto;
-
-import com.pavilion.domain.ErrorCode;
-import com.pavilion.domain.Result;
+package com.pavilion.model.dto;
 
 public class TableData<T> {
     private int code;

@@ -1,4 +1,4 @@
-package com.pavilion.domain;
+package com.pavilion.model;
 public enum ErrorCode {
     OK(0, "成功"),
     ParameterError(10, "参数错误"),

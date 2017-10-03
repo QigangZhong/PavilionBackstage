@@ -1,9 +1,6 @@
 package com.pavilion.service;
 
-import com.pavilion.dao.UserMapper;
-import com.pavilion.domain.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.pavilion.model.User;
 
 import java.util.List;
 

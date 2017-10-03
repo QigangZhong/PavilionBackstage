@@ -1,11 +1,13 @@
-package com.pavilion.domain;
+package com.pavilion.model;
 
 import java.io.Serializable;
 
-public class Role implements Serializable {
+public class Menu implements Serializable {
     private Integer id;
 
-    private String name;
+    private String url;
+
+    private String method;
 
     private String description;
 
@@ -15,15 +17,15 @@ public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Role(Integer id, String name, String description, String createTime, String lastUpdateTime) {
+    public Menu(Integer id, String url, String description, String createTime, String lastUpdateTime) {
         this.id = id;
-        this.name = name;
+        this.url = url;
         this.description = description;
         this.createTime = createTime;
         this.lastUpdateTime = lastUpdateTime;
     }
 
-    public Role() {
+    public Menu() {
         super();
     }
 
@@ -35,12 +37,20 @@ public class Role implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setUrl(String url) {
+        this.url = url == null ? null : url.trim();
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public String getDescription() {

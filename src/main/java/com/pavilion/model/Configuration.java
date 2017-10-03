@@ -1,9 +1,7 @@
-package com.pavilion.domain;
+package com.pavilion.model;
 
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 
 import javax.servlet.MultipartConfigElement;
 

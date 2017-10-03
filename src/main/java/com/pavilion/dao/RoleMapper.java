@@ -1,6 +1,6 @@
 package com.pavilion.dao;
 
-import com.pavilion.domain.Role;
+import com.pavilion.model.Role;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;

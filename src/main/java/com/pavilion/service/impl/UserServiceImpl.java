@@ -1,7 +1,7 @@
 package com.pavilion.service.impl;
 
 import com.pavilion.dao.UserMapper;
-import com.pavilion.domain.User;
+import com.pavilion.model.User;
 import com.pavilion.service.UserService;
 import com.pavilion.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;

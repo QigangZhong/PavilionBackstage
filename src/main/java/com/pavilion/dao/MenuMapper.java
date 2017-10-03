@@ -1,6 +1,6 @@
 package com.pavilion.dao;
 
-import com.pavilion.domain.Menu;
+import com.pavilion.model.Menu;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 

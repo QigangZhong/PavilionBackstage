@@ -1,6 +1,6 @@
 package com.pavilion.dao;
 
-import com.pavilion.domain.UserRole;
+import com.pavilion.model.UserRole;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 

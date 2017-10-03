@@ -1,7 +1,7 @@
 package com.pavilion.service.impl;
 
 import com.pavilion.dao.UserRoleMapper;
-import com.pavilion.domain.UserRole;
+import com.pavilion.model.UserRole;
 import com.pavilion.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

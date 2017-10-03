@@ -1,6 +1,6 @@
 package com.pavilion.dao;
 
-import com.pavilion.domain.RoleMenu;
+import com.pavilion.model.RoleMenu;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 

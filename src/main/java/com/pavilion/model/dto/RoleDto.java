@@ -1,4 +1,4 @@
-package com.pavilion.domain.dto;
+package com.pavilion.model.dto;
 
 public class RoleDto {
     private int id;

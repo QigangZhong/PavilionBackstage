@@ -58,6 +58,8 @@
 
         //监听提交
         form.on('submit(formAddUser)', function(data){
+            layer.load(0, { shade: 0.3});
+
             var userName=data.field.username;
             var mobile=data.field.mobile;
             var email=data.field.email;
@@ -74,9 +76,11 @@
 
             $.post("/user/add",{username:userName,mobile:mobile,email:email,nickname:nickname,roles:roles},function (result) {
                 if(0!=result.code){
+                    layer.closeAll('loading');
                     layer.msg(result.msg,{offset:"10px"});
                     return false;
                 }
+                layer.closeAll('loading');
                 layer.msg(result.msg,{offset:"10px"});
             });
 
