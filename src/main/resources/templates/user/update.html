@@ -36,7 +36,8 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formProfile" style="width:150px;">修改</button>
+                <button class="layui-btn" lay-submit lay-filter="formProfile">修改</button>
+                <button class="layui-btn" lay-submit lay-filter="resetPwd">重置密码</button>
             </div>
         </div>
     </form>
@@ -68,6 +69,29 @@
                     return false;
                 }
                 layer.msg(result.msg,{offset:"10px"});
+            });
+
+            return false;
+        });
+
+        form.on('submit(resetPwd)',function (data) {
+            var id=data.field.id;
+
+            $.post("/user/resetPwd",{userId:id},function (result) {
+                if(0!=result.code){
+                    layer.msg(result.msg,{offset:"10px"});
+                    return false;
+                }
+                layer.open({
+                    type: 1
+                    ,offset: "10px"
+                    ,id: 'promptPwd'
+                    ,content: '<div style="padding: 20px 100px;">新密码:<span style="color:red">'+ result.data +'</span>, 已尝试发送新密码邮件给该用户</div>'
+                    ,btn: '知道了'
+                    ,yes: function(){
+                        layer.closeAll();
+                    }
+                });
             });
 
             return false;

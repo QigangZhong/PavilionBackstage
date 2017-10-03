@@ -81,7 +81,19 @@
                     return false;
                 }
                 layer.closeAll('loading');
-                layer.msg(result.msg,{offset:"10px"});
+
+                layer.open({
+                    type: 1
+                    ,offset: "10px"
+                    ,id: 'promptPwd'
+                    ,content: '<div style="padding: 20px 100px;">新密码:<span style="color:red">'+ result.data +'</span>, 已尝试发送新密码邮件给该用户</div>'
+                    ,btn: '知道了'
+                    ,yes: function(){
+                        layer.closeAll();
+                    }
+                });
+
+                //layer.msg(result.msg,{offset:"10px"});
             });
 
             return false;

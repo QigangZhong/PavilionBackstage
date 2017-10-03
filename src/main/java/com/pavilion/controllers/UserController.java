@@ -1,5 +1,6 @@
 package com.pavilion.controllers;
 
+import com.alibaba.fastjson.JSON;
 import com.pavilion.model.ErrorCode;
 import com.pavilion.model.Result;
 import com.pavilion.model.Role;
@@ -82,6 +83,8 @@ public class UserController {
         HttpSession session = request.getSession();
         session.setAttribute("user",user);
 
+        logger.info("登录成功,用户信息:"+ JSON.toJSONString(user));
+
         return Result.success("登陆成功","");
     }
 
@@ -106,6 +109,10 @@ public class UserController {
     public Result<String> add(User user,String roles){
         if(user==null){
             return Result.parameterError();
+        }
+
+        if(roles.length()<=0){
+            return Result.fail("请选择用户角色");
         }
 
         if(StringUtils.isEmptyOrWhitespace(user.getUsername()) || StringUtils.isEmptyOrWhitespace(user.getMobile())|| StringUtils.isEmptyOrWhitespace(user.getEmail())){
@@ -138,12 +145,10 @@ public class UserController {
         //关联角色
         User thisUser=userService.getUserByUserName(user.getUsername());
         userRoleService.deleteByUserId(thisUser.getId());
-        if (roles.length()>0){
-            String[] strRoles=roles.split(",");
-            for (int i = 0; i <strRoles.length ; i++) {
-                int roleId=Integer.parseInt(strRoles[i]);
-                int row = userRoleService.insert(thisUser.getId(),roleId);
-            }
+        String[] strRoles=roles.split(",");
+        for (int i = 0; i <strRoles.length ; i++) {
+            int roleId=Integer.parseInt(strRoles[i]);
+            int row = userRoleService.insert(thisUser.getId(),roleId);
         }
 
         try {
@@ -155,7 +160,9 @@ public class UserController {
             return Result.fail(-1,"用户注册成功,但密码通知邮件发送失败");
         }
 
-        return Result.success("添加成功,初始密码已发送至用户邮箱","");
+        logger.info("添加用户成功,用户信息:"+ JSON.toJSONString(thisUser));
+
+        return Result.success("添加成功,初始密码已发送至用户邮箱",pwd);
     }
 
     @RequestMapping(value="/user/profile", method = RequestMethod.GET)
@@ -185,6 +192,14 @@ public class UserController {
         User user=(User) request.getSession().getAttribute("user");
         if(user==null || user.getId()<=0){
             return Result.fail(-1,"修改失败","");
+        }
+
+        if(userName.length()<8 || userName.length()>16){
+            return Result.fail("用户名长度要在8-16位之间");
+        }
+
+        if(!ValidateUtil.isMobileNumber(mobile) || !ValidateUtil.isEmailAddress(email)){
+            return Result.fail("手机号或者邮箱格式不正确");
         }
 
         User userInDb=userService.getUserById(user.getId());
@@ -316,6 +331,14 @@ public class UserController {
     @RequestMapping(value="/user/update", method = RequestMethod.POST)
     @ResponseBody
     public Result<String> update(User user, String roles){
+        if(user.getUsername().length()<8 || user.getUsername().length()>16){
+            return Result.fail("用户名长度要在8-16位之间");
+        }
+
+        if(!ValidateUtil.isMobileNumber(user.getMobile()) || !ValidateUtil.isEmailAddress(user.getEmail())){
+            return Result.fail("手机号或者邮箱格式不正确");
+        }
+
         User userInDb=userService.getUserById(user.getId());
         userInDb.setUsername(user.getUsername());
         userInDb.setMobile(user.getMobile());
@@ -353,6 +376,22 @@ public class UserController {
         return Result.success("删除成功","");
     }
 
+    @RequestMapping(value="/user/resetPwd", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<String> resetPwd(int userId){
+        User user=userService.getUserById(userId);
+
+        String newPwd=PasswordUtil.getRandomPassword(8);
+        user.setPassword(newPwd);
+        user.setLastUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        int row = userService.updateUser(user);
+        if(row<=0){
+            return Result.fail("密码重置失败");
+        }
+
+        return Result.success("密码重置成功",newPwd);
+    }
 
 
     @RequestMapping(value="/user/editRole", method = RequestMethod.GET)
@@ -367,6 +406,7 @@ public class UserController {
 
         return Result.success("修改成功","");
     }
+
 
 
 }

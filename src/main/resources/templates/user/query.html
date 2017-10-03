@@ -82,7 +82,7 @@
             if(layEvent === 'detail'){ //查看
                 alert(data);
             } else if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么',{offset:'10px'}, function(index){
+                layer.confirm('确定删除吗?',{offset:'10px'}, function(index){
                     obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                     layer.close(index);
                     //向服务端发送删除指令
