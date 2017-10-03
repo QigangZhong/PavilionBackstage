@@ -1,0 +1,25 @@
+<div style="margin-left:20px;margin-bottom: 20px;" xmlns:th="http://www.w3.org/1999/xhtml">
+<input type="hidden" id="materialId" th:value="${materialId}" />
+<table id="priceTable" lay-filter="priceTableFilter">
+</table>
+
+<script src="/js/jquery.min.js" ></script>
+<script th:inline="javascript">
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            id:'priceTableId',
+            elem:'#priceTable',
+            url:'/material/getPriceInfo?materialId='+[[${materialId}]],
+            //height:500,
+            width:284,
+            loading:true,
+            cols:  [[
+                {field: 'id', title: 'ID', width: 60, sort:true, fixed:true},
+                {field: 'unit', title: '单位(unit)', width: 100},
+                {field: 'price', title: '价格(USD)', width: 120}
+            ]]
+        });
+    });
+</script>
+</div>

@@ -53,12 +53,21 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test1">
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">用户管理</a>
                     <dl class="layui-nav-child">
-                        <dd id="menu3"><a href="javascript:createTab('queryUser','/user/query','用户查询');">用户查询</a></dd>
-                        <dd id="menu4"><a href="javascript:createTab('addUser','/user/add','添加用户');">添加用户</a></dd>
+                        <dd id="menu1"><a href="javascript:createTab('user_query','/user/query','用户查询');">用户查询</a></dd>
+                        <dd id="menu2"><a href="javascript:createTab('user_add','/user/add','添加用户');">添加用户</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-nav-tree" lay-filter="test2">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">材料管理</a>
+                    <dl class="layui-nav-child">
+                        <dd id="menu3"><a href="javascript:createTab('material_bomQuery','/material/bomQuery','BOM查询');">BOM查询</a></dd>
+                        <dd id="menu4"><a href="javascript:createTab('material_price','/material/price','材料阶梯价');">阶梯价管理</a></dd>
                     </dl>
                 </li>
             </ul>

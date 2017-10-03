@@ -58,3 +58,42 @@ create table role_menu
 insert into role_menu values(1,1);
 
 
+
+
+
+
+--材料表
+create table material
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT ,
+  cpscode varchar(128), --子件编码
+  cinvname nvarchar(128), --子件名称
+  cinvstd nvarchar(512), --规格型号
+  ipsquantity int, --基本用量分子
+  type varchar(50), --类型
+  create_time datetime,
+  last_update_time datetime
+);
+insert into material values(NULL,'3E0515','绿光模块','规格型号',2,'L',datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+
+create table material_price
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT ,
+  material_id INTEGER not NULL ,
+  unit int,
+  price decimal(19,6),
+  create_time datetime NOT NULL,
+  last_update_time datetime
+);
+insert into material_price values(NULL ,1,1,10.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,10,9.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,50,8.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,100,7.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,500,6.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,1000,5.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,1500,4.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,2000,3.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+
+
+
+
