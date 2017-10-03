@@ -1,0 +1,65 @@
+<div xmlns:th="http://www.w3.org/1999/xhtml">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名：</label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="id" th:value="${id}" />
+                <input type="text" name="username" th:value="${username}" required  lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="mobile" th:value="${mobile}" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="email" th:value="${email}" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">昵称：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="nickname" th:value="${nickname}" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色：</label>
+            <div class="layui-input-inline">
+                <p class="layui-form-mid layui-word-aux" th:text="${roleName}"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formProfile" style="width:150px;">修改</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formProfile)', function(data){
+            var id=data.field.id;
+            var userName=data.field.username;
+            var mobile=data.field.mobile;
+            var email=data.field.email;
+            var nickname=data.field.nickname;
+
+            $.post("/user/update",{id:id,username:userName,mobile:mobile,email:email,nickname:nickname},function (result) {
+                if(0!=result.code){
+                    layer.msg(result.msg,{offset:"10px"});
+                    return false;
+                }
+                layer.msg(result.msg,{offset:"10px"});
+            });
+
+            return false;
+        });
+    });
+</script>

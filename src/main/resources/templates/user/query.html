@@ -30,7 +30,8 @@
     <div class="layui-inline">
         <input class="layui-input" name="searchKey" id="searchKey" autocomplete="off">
     </div>
-    <button class="layui-btn" data-type="reload">搜索</button>
+    <button class="layui-btn" data-type="search">搜索</button>
+    <button class="layui-btn" data-type="refresh">刷新</button>
 </div>
 
 <table id="userTable" lay-filter="userTableFilter">
@@ -51,7 +52,7 @@
             elem:'#userTable',
             url:'/user/queryUsers',
             //height:500,
-            width:886,
+            width:906,
             page:true,
             limits: [10,20,50,100],
             limit:10,
@@ -63,7 +64,7 @@
                 {field: 'mobile', title: '手机号', width: 120},
                 {field: 'email', title: '邮箱', width: 220},
                 {field: 'nickname', title: '昵称', width: 120},
-                {fixed: 'right', align: 'center', width: 160, toolbar:"#userOp"}
+                {fixed: 'right', align: 'center', width: 180, toolbar:"#userOp"}
             ]]
         });
 
@@ -85,14 +86,19 @@
                     });
                 });
             } else if(layEvent === 'edit'){ //编辑
-                $.get("/user/modifyUser?userId="+data.id,function (data) {
+                $.get("/user/update?userId="+data.id,function (data) {
                     layer.open({
                         type: 1,
                         offset: '10px',
                         title:"用户信息修改",
                         content: data,
                         cancel:function () {
-                            table.reload("userTableId")
+                            table.reload("userTableId", {
+                                where: {
+                                    searchKey: $('#searchKey').val(),
+                                    random:Date.parse(new Date())
+                                }
+                            })
                         }
                     });
                 });
@@ -134,12 +140,18 @@
                 var checkStatus = table.checkStatus('userTableId');
                 layer.msg(checkStatus.isAll ? '全选': '未全选')
             }
-            ,reload: function(){
-                var searchKey = $('#searchKey');
-
+            ,search: function(){
                 table.reload('userTableId', {
                     where: {
-                        searchKey: searchKey.val()
+                        searchKey: $('#searchKey').val()
+                    }
+                });
+            }
+            ,refresh: function(){
+                table.reload('userTableId', {
+                    where: {
+                        searchKey: $('#searchKey').val(),
+                        random:Date.parse(new Date())
                     }
                 });
             }

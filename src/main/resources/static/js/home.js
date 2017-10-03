@@ -63,11 +63,13 @@ $(function () {
 });
 
 function createTab(iframeId, srcUrl, title) {
+    var tabId=iframeId+"Tab";
+
     if($("#"+iframeId).length>0){
+        //切换到指定Tab项
+        element.tabChange('tabHead', tabId);
         return false;
     }
-
-    var tabId=iframeId+"Tab";
 
     //新增一个Tab项
     element.tabAdd('tabHead', {

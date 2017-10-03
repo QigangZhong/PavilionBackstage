@@ -158,30 +158,6 @@ public class UserController {
         return Result.success("添加成功,初始密码已发送至用户邮箱","");
     }
 
-    @RequestMapping(value="/user/update", method = RequestMethod.GET)
-    public String update(){
-        return "update";
-    }
-
-    @RequestMapping(value="/user/update", method = RequestMethod.POST)
-    @ResponseBody
-    public Result<String> update(User user){
-        if(user==null){
-            return Result.parameterError();
-        }
-
-        if(StringUtils.isEmptyOrWhitespace(user.getUsername()) || StringUtils.isEmptyOrWhitespace(user.getPassword())){
-            return Result.fail(ErrorCode.Error.getCode(),"用户名或者密码不能为空","");
-        }
-
-        int result=userService.insert(user);
-        if(result!=1){
-            return Result.fail(ErrorCode.Error.getCode(),"修改用户失败","");
-        }
-
-        return Result.success("修改成功","");
-    }
-
     @RequestMapping(value="/user/profile", method = RequestMethod.GET)
     public String profile(HttpServletRequest request,Map map){
         User user=(User) request.getSession().getAttribute("user");
@@ -200,7 +176,7 @@ public class UserController {
             map.put("roleName", roleNames.toString().substring(0, roleNames.toString().length() - 1));
         }
 
-        return "user/profile";
+        return "user/myProfile";
     }
 
     @RequestMapping(value="/user/updateProfile", method = RequestMethod.POST)
@@ -313,8 +289,8 @@ public class UserController {
         return data;
     }
 
-    @RequestMapping(value="/user/modifyUser", method = RequestMethod.GET)
-    public String modifyUser(int userId,Map map){
+    @RequestMapping(value="/user/update", method = RequestMethod.GET)
+    public String update(int userId,Map map){
         User user=userService.getUserById(userId);
         map.put("id",user.getId());
         map.put("username",user.getUsername());
@@ -334,12 +310,12 @@ public class UserController {
             map.put("roleName","匿名用户");
         }
 
-        return "user/modifyUser";
+        return "user/update";
     }
 
-    @RequestMapping(value="/user/modifyUser", method = RequestMethod.POST)
+    @RequestMapping(value="/user/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<String> modifyUser(User user){
+    public Result<String> update(User user){
         User userInDb=userService.getUserById(user.getId());
         userInDb.setUsername(user.getUsername());
         userInDb.setMobile(user.getMobile());
