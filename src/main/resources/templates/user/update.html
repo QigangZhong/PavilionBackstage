@@ -27,8 +27,11 @@
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">角色：</label>
-            <div class="layui-input-inline">
-                <p class="layui-form-mid layui-word-aux" th:text="${roleName}"></p>
+            <div class="layui-input-block" th:each="role:${allRoles}">
+                <input type="checkbox" name="role" th:title="${role.name}" th:value="${role.id}" th:checked="${role.active}">
+                <div class="layui-unselect layui-form-checkbox" th:classappend="${role.active?'layui-form-checked':'' }" lay-skin="">
+                    <span th:text="${role.name}"></span><i class="layui-icon"></i>
+                </div>
             </div>
         </div>
         <div class="layui-form-item">
@@ -50,8 +53,16 @@
             var mobile=data.field.mobile;
             var email=data.field.email;
             var nickname=data.field.nickname;
+            var roles="";
 
-            $.post("/user/update",{id:id,username:userName,mobile:mobile,email:email,nickname:nickname},function (result) {
+            $("input[name='role']:checked").each(function (index,value) {
+                roles+=value.value+",";
+            });
+            if(roles.length>0){
+                roles=roles.substring(0,roles.length-1);
+            }
+
+            $.post("/user/update",{id:id,username:userName,mobile:mobile,email:email,nickname:nickname,roles:roles},function (result) {
                 if(0!=result.code){
                     layer.msg(result.msg,{offset:"10px"});
                     return false;
@@ -61,5 +72,8 @@
 
             return false;
         });
+
+        //重新渲染checkbox,否则动态生成的checkbox点击无效
+        form.render('checkbox');
     });
 </script>

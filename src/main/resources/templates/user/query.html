@@ -40,11 +40,16 @@
 <script type="text/html" id="userOp">
     <!--<a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>-->
     <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="privilege">权限</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script>
+    var element;
+    layui.use('element', function () {
+        element = layui.element;
+
+    });
+
     layui.use('table', function(){
         var table = layui.table;
         table.render({
@@ -109,18 +114,6 @@
 //                    username: '123'
 //                    ,title: 'xxx'
 //                });
-            }else if(layEvent==='privilege'){
-                $.get("/user/getPrivilege?userId="+data.id,function (data) {
-                    layer.open({
-                        type: 1,
-                        offset: '10px',
-                        title:"用户信息修改",
-                        content: data,
-                        cancel:function () {
-                            table.reload("userTableId")
-                        }
-                    });
-                });
             }
         });
 

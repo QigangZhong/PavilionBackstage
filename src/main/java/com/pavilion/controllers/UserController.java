@@ -1,11 +1,11 @@
 package com.pavilion.controllers;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.pavilion.domain.ErrorCode;
 import com.pavilion.domain.Result;
 import com.pavilion.domain.Role;
 import com.pavilion.domain.User;
+import com.pavilion.domain.dto.PrivilegeDto;
+import com.pavilion.domain.dto.RoleDto;
 import com.pavilion.domain.dto.TableData;
 import com.pavilion.domain.dto.UserDto;
 import com.pavilion.service.MailService;
@@ -29,11 +29,12 @@ import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -298,24 +299,24 @@ public class UserController {
         map.put("email",user.getEmail());
         map.put("nickname",user.getNickname());
 
-        List<Role> roles=roleService.getRolesByUserId(user.getId());
-        StringBuilder roleNames =new StringBuilder();
-        for (Role role: roles ) {
-            roleNames.append(role.getName()+",");
+        List<Role> currentRoles=roleService.getRolesByUserId(userId);
+        List<Integer> currentRoleIds=currentRoles.stream().map(Role::getId).collect(Collectors.toList());
+        List<Role> allRoles=roleService.getAll();
+        List<RoleDto> list=new ArrayList<>();
+        for (int i = 0; i < allRoles.size(); i++) {
+            Role role =  allRoles.get(i);
+            boolean isActive=currentRoleIds.contains(role.getId());
+            RoleDto dto=new RoleDto(role.getId(),role.getName(),isActive);
+            list.add(dto);
         }
-
-        if(roles.size()>0) {
-            map.put("roleName", roleNames.toString().substring(0, roleNames.toString().length() - 1));
-        }else{
-            map.put("roleName","匿名用户");
-        }
+        map.put("allRoles",list);
 
         return "user/update";
     }
 
     @RequestMapping(value="/user/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<String> update(User user){
+    public Result<String> update(User user, String roles){
         User userInDb=userService.getUserById(user.getId());
         userInDb.setUsername(user.getUsername());
         userInDb.setMobile(user.getMobile());
@@ -324,11 +325,22 @@ public class UserController {
         userInDb.setLastUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         int row = userService.updateUser(userInDb);
-        if(row>0){
-            return Result.success("修改成功","");
-        }else{
+        if(row<=0){
             return Result.fail("修改失败");
         }
+
+        //关联角色
+        User thisUser=userService.getUserById(user.getId());
+        userRoleService.deleteByUserId(thisUser.getId());
+        if (roles.length()>0){
+            String[] strRoles=roles.split(",");
+            for (int i = 0; i <strRoles.length ; i++) {
+                int roleId=Integer.parseInt(strRoles[i]);
+                userRoleService.insert(thisUser.getId(),roleId);
+            }
+        }
+
+        return Result.success("修改成功","");
     }
 
 
@@ -356,4 +368,6 @@ public class UserController {
 
         return Result.success("修改成功","");
     }
+
+
 }
