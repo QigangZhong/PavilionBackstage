@@ -19,7 +19,8 @@
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <div class="layui-logo">Pavilion Backstage</div>
-        <ul id="left" class="layui-nav layui-layout-left">
+        <!--顶部菜单-->
+        <!--<ul id="left" class="layui-nav layui-layout-left">
             <li id="hideLeft" class="layui-nav-item"><a href="javascript:;">隐藏侧边栏</a></li>
             <li class="layui-nav-item">
                 <a href="javascript:;">高级功能</a>
@@ -27,7 +28,7 @@
                     <dd><a href="">权限配置</a></dd>
                 </dl>
             </li>
-        </ul>
+        </ul>-->
 
         <ul th:if="${session==null || session.user == null}" class="layui-nav layui-layout-right">
             <li id="loginbtn" class="layui-nav-item"><a href="javascript:;">登陆</a></li>
@@ -71,13 +72,11 @@
                     <i class="layui-icon"></i>
                         Home
                 </li>
-                <li>网站设置</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
                     <iframe id="homeTab" src="/upload"></iframe>
                 </div>
-                <div class="layui-tab-item">2</div>
             </div>
         </div>
 
