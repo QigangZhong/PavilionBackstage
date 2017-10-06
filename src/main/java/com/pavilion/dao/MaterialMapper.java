@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 public interface MaterialMapper {
+    @Delete("delete from material where id=#{id}")
     int deleteByPrimaryKey(Integer id);
 
     int insert(Material record);

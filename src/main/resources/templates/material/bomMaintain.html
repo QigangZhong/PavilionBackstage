@@ -45,6 +45,7 @@
 </table>
 <script type="text/html" id="mtlOp">
     <a class="layui-btn layui-btn-mini" lay-event="viewPrice">阶梯价</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 
 <div class="demoTable">
@@ -81,10 +82,10 @@
             elem:'#mtlTable',
             url:'/material/query',
             //height:500,
-            width:1048,
+            width:1248,
             page:true,
-            limits: [20,50,100],
-            limit:20,
+            limits: [10,20,50,100],
+            limit:10,
             loading:true,
             cols:  [[ //标题栏
                 {checkbox: true, fixed:true},
@@ -94,7 +95,7 @@
                 {field: 'cinvstd', title: '规格型号', width: 320, edit:'text'},
                 {field: 'type', title: '类型', width: 120, edit:'text'},
                 {field: 'ipsquantity', title: '基本用量分子', width: 120, edit:'text'},
-                {fixed: 'right', align: 'center', width: 100, toolbar:"#mtlOp"}
+                {fixed: 'right', align: 'center', width: 120, toolbar:"#mtlOp"}
             ]]
         });
 
@@ -113,6 +114,17 @@
                         content: data
                     });
                 });
+            }
+            if(layEvent === 'del'){ //删除
+                layer.confirm('确定删除吗?',{offset:'10px'}, function(index){
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    $.post("/material/deleteMaterial",{id:data.id},function (data) {
+                        layer.msg(data.msg,{offset:'10px'});
+                    });
+                });
+                return false;
             }
         });
         table.on('edit(mtlTableFilter)',function(obj){

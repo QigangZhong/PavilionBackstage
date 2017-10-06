@@ -230,4 +230,14 @@ public class MaterialController {
         }
     }
 
+    @RequestMapping(value = "/deleteMaterial", method= RequestMethod.POST)
+    @ResponseBody
+    public Result<String> deleteMaterial(int id){
+        int row = materialService.deleteById(id);
+        if(row>0) {
+            return Result.success("删除成功");
+        }else{
+            return Result.fail("删除失败");
+        }
+    }
 }

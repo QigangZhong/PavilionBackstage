@@ -22,4 +22,6 @@ public interface MaterialService {
     Material getByCpscode(String cpscode);
 
     int updateMaterial(Material mtl);
+
+    int deleteById(int id);
 }

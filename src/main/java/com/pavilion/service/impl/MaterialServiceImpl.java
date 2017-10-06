@@ -60,5 +60,10 @@ public class MaterialServiceImpl implements MaterialService {
         return materialMapper.updateByPrimaryKey(mtl);
     }
 
+    @Override
+    public int deleteById(int id) {
+        return materialMapper.deleteByPrimaryKey(id);
+    }
+
 
 }
