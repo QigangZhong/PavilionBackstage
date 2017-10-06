@@ -10,9 +10,13 @@ import com.pavilion.model.dto.TableData;
 import com.pavilion.service.CostService;
 import com.pavilion.service.MaterialPriceService;
 import com.pavilion.service.MaterialService;
+import com.pavilion.util.FileUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationHome;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,11 +28,15 @@ import org.thymeleaf.util.StringUtils;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
 @RequestMapping("/material")
 public class MaterialController {
+
+    Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     MaterialService materialService;
@@ -249,14 +257,23 @@ public class MaterialController {
         if (!file.isEmpty()) {
             try {
                 //获取jar包所在的路径
-                String jarPath=MaterialController.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                jarPath= URLDecoder.decode(jarPath, "UTF-8");
-                File uploadedFile=new File(jarPath+"upload/"+file.getOriginalFilename());
+                /*ApplicationHome home = new ApplicationHome(this.getClass());
+                String uploadedFileDir=home.getDir()+"\\upload\\";
+                File tmp=new File(uploadedFileDir);
+                if(!tmp.exists()){
+                    tmp.mkdir();
+                }
+                String uploadedFilePath=uploadedFileDir+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+file.getOriginalFilename();
+                logger.info(uploadedFilePath);
+                File uploadedFile=new File(uploadedFilePath);*/
 
+                File uploadedFile=new File(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+ FileUtil.getFileExtension(file.getOriginalFilename()));
                 BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream(uploadedFile));
                 out.write(file.getBytes());
                 out.flush();
                 out.close();
+
+                logger.info("原始上传文件名称:"+file.getOriginalFilename()+"  转换后的名称:"+uploadedFile.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return "上传失败," + e.getMessage();
