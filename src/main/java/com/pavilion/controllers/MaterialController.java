@@ -18,8 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -36,6 +36,11 @@ public class MaterialController {
     @RequestMapping(value = "/bomQuery", method= RequestMethod.GET)
     public String bomQuery(){
         return "material/bomQuery";
+    }
+
+    @RequestMapping(value = "/bomMaintain", method= RequestMethod.GET)
+    public String bomMaintain(){
+        return "material/bomMaintain";
     }
 
     @RequestMapping(value="/query", method = RequestMethod.GET)
@@ -125,4 +130,70 @@ public class MaterialController {
             return Double.valueOf(0);
         }
     }
+
+    @RequestMapping(value = "/add", method= RequestMethod.POST)
+    @ResponseBody
+    public Result<String> add(String cpscode,String cinvname,String cinvstd,String type,int ipsquantity){
+        if(StringUtils.isEmptyOrWhitespace(cpscode) ||StringUtils.isEmptyOrWhitespace(cinvname) || StringUtils.isEmptyOrWhitespace(cinvstd)){
+            return Result.parameterError();
+        }
+
+        if(ipsquantity<=0){
+            ipsquantity=0;
+        }
+
+        Material existMtl = materialService.getByCpscode(cpscode);
+        if(existMtl!=null){
+            return Result.fail("子件编码[ "+existMtl.getCpscode()+" ]已存在");
+        }
+
+        Material mtl=new Material();
+        mtl.setCpscode(cpscode);
+        mtl.setCinvname(cinvname);
+        mtl.setCinvstd(cinvstd);
+        mtl.setType(type);
+        mtl.setIpsquantity(ipsquantity);
+        mtl.setTotalPrice(Double.valueOf(0));
+        int row = materialService.add(mtl);
+
+        if(row>0) {
+            return Result.success("添加成功");
+        }else{
+            return Result.fail("添加失败");
+        }
+    }
+
+    @RequestMapping(value = "/addPrice", method= RequestMethod.POST)
+    @ResponseBody
+    public Result<String> addPrice(int mtlId,int unit,Double price){
+        if(mtlId<=0 || unit<=0 || price<=0){
+            return Result.parameterError();
+        }
+
+        List<MaterialPrice> prices=materialPriceService.getMaterialPrices(mtlId);
+        if(prices!=null && prices.stream().anyMatch(mp->mp.getUnit()==unit)){
+            return Result.fail("已存在阶梯价");
+        }
+
+        MaterialPrice mp=new MaterialPrice();
+        mp.setMaterialId(mtlId);
+        mp.setUnit(unit);
+        mp.setPrice(price);
+
+        int row = materialPriceService.add(mp);
+
+        if(row>0) {
+            return Result.success("添加成功");
+        }else{
+            return Result.fail("添加失败");
+        }
+    }
+
+    @RequestMapping(value = "/updateMaterial", method= RequestMethod.POST)
+    @ResponseBody
+    public Result<Double> updateMaterial(Material mtl){
+
+        return Result.success("修改成功");
+    }
+
 }

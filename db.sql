@@ -101,7 +101,7 @@ insert into material_price values(NULL ,1,1500,4.00,datetime(CURRENT_TIMESTAMP,'
 insert into material_price values(NULL ,1,2000,3.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
 
 --更新材料总价
-update material set total_price=(material.ipsquantity* (select material_price.price from material_price where material_price.unit<=material.ipsquantity ORDER BY material_price.unit desc));
+update material set total_price=(material.ipsquantity* (select material_price.price from material_price where material_id=material.id and material_price.unit<=material.ipsquantity ORDER BY material_price.unit desc));
 
 
 

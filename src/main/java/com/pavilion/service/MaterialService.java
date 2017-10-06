@@ -16,4 +16,8 @@ public interface MaterialService {
     int updateIpsQty(int mtlId,int ipsQty);
 
     Double getTotalPrice();
+
+    int add(Material mtl);
+
+    Material getByCpscode(String cpscode);
 }

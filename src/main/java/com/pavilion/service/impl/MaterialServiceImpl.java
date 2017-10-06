@@ -44,4 +44,16 @@ public class MaterialServiceImpl implements MaterialService {
     public Double getTotalPrice() {
         return materialMapper.getTotalPrice();
     }
+
+    @Override
+    public int add(Material mtl) {
+        return materialMapper.add(mtl);
+    }
+
+    @Override
+    public Material getByCpscode(String cpscode) {
+        return materialMapper.getByCpscode(cpscode);
+    }
+
+
 }

@@ -1,10 +1,7 @@
 package com.pavilion.dao;
 
 import com.pavilion.model.Material;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -36,6 +33,14 @@ public interface MaterialMapper {
     @Select("select sum(total_price) as totalPrice from material")
     Double getTotalPrice();
 
-    @Update("update material set ipsquantity=#{ipsquantity},total_price=(#{ipsquantity}*(select material_price.price from material_price where material_price.unit<=#{ipsquantity} ORDER BY material_price.unit desc)) where id=#{id}")
+    @Update("update material set ipsquantity=#{ipsquantity},total_price=(#{ipsquantity}*(select material_price.price from material_price where material_id=#{id} and material_price.unit<=#{ipsquantity} ORDER BY material_price.unit desc)) where id=#{id}")
     int updateIpsQty(@Param("id") int id, @Param("ipsquantity") int ipsquantity);
+
+    @Insert("insert into material \n" +
+            "(cpscode,cinvname,cinvstd,type,ipsquantity,total_price,create_time,last_update_time,deleted) \n" +
+            "values(#{cpscode},#{cinvname},#{cinvstd},#{type},#{ipsquantity},#{totalPrice},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0)")
+    int add(Material mtl);
+
+    @Select("select * from material where cpscode=#{cpscode}")
+    Material getByCpscode(String cpscode);
 }

@@ -14,7 +14,7 @@
         //让该页面在iframe中展示时,iframe的高度能自适应
         $(function () {
             var h=document.body.scrollHeight;
-            parent.document.getElementById("material_bomQuery").style.height=h+"px";
+            parent.document.getElementById("material_bomMaintain").style.height=h+"px";
         });
 
         $("#totalPrice").html('<i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i>');
@@ -43,9 +43,28 @@
 
 <table id="mtlTable" lay-filter="mtlTableFilter">
 </table>
-<p>注:</p>
-<p>1. 基本用量分子可以修改</p>
-<p>2. 多人同时修改基本用量分子时,总价会依据最近一次修改的值计算</p>
+<script type="text/html" id="mtlOp">
+    <a class="layui-btn layui-btn-mini" lay-event="viewPrice">阶梯价</a>
+</script>
+
+<div class="demoTable">
+    <div class="layui-inline">
+        <input class="layui-input" name="cpscode" id="cpscode1" placeholder="子件编码(cpscode)" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="cinvname" id="cinvname1" placeholder="子件名称(cinvname)" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="cinvstd" id="cinvstd1" placeholder="规格型号(cinvstd)" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="type" id="type1" placeholder="类型" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="type" id="ipsquantity" placeholder="默认基本用量分子" autocomplete="off">
+    </div>
+    <button class="layui-btn" data-type="addMtl"><i class="layui-icon"></i></button>
+</div>
 
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script>
@@ -62,7 +81,7 @@
             elem:'#mtlTable',
             url:'/material/query',
             //height:500,
-            width:946,
+            width:1048,
             page:true,
             limits: [20,50,100],
             limit:20,
@@ -74,7 +93,8 @@
                 {field: 'cinvname', title: '子件名称', width: 150},
                 {field: 'cinvstd', title: '规格型号', width: 320},
                 {field: 'type', title: '类型', width: 120},
-                {field: 'ipsquantity', title: '基本用量分子', width: 120, edit:'text'}
+                {field: 'ipsquantity', title: '基本用量分子', width: 120, edit:'text'},
+                {fixed: 'right', align: 'center', width: 100, toolbar:"#mtlOp"}
             ]]
         });
 
@@ -128,6 +148,52 @@
                         random:Date.parse(new Date())
                     }
                 });
+            }
+            ,addMtl:function () {
+                var cpscode=$("#cpscode1").val();
+                var cinvname=$("#cinvname1").val();
+                var cinvstd=$("#cinvstd1").val();
+                var type=$("#type1").val();
+                var ipsquantity=$("#ipsquantity").val();
+
+                if(cpscode.replace(/(^s*)|(s*$)/g, "").length ==0){
+                    layer.msg("子件编码不能为空");
+                    return false;
+                }
+                if(cinvname.replace(/(^s*)|(s*$)/g, "").length ==0){
+                    layer.msg("子件名称不能为空");
+                    return false;
+                }
+                if(cinvstd.replace(/(^s*)|(s*$)/g, "").length ==0){
+                    layer.msg("规格型号不能为空");
+                    return false;
+                }
+                if(type.replace(/(^s*)|(s*$)/g, "").length ==0){
+                    layer.msg("类型不能为空");
+                    return false;
+                }
+                if(ipsquantity.replace(/(^s*)|(s*$)/g, "").length ==0 || isNaN(ipsquantity)){
+                    layer.msg("基本用量分子须为数字");
+                    return false;
+                }
+
+                layer.load(0, { shade: 0.3});
+                $.post("/material/add",{cpscode:cpscode,cinvname:cinvname,cinvstd:cinvstd,type:type,ipsquantity:ipsquantity},function (data) {
+                    table.reload('mtlTableId', {
+                        where: {
+                            cpscode: $('#cpscode').val(),
+                            cinvname: $('#cinvname').val(),
+                            cinvstd: $('#cinvstd').val(),
+                            type: $('#type').val(),
+                            random:Date.parse(new Date())
+                        }
+                    });
+
+                    layer.closeAll('loading');
+                    layer.msg(data.msg);
+                });
+
+                return false;
             }
         };
 

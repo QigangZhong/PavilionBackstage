@@ -8,4 +8,6 @@ import java.util.List;
 public interface MaterialPriceService {
 
     List<MaterialPrice> getMaterialPrices(int materialId);
+
+    int add(MaterialPrice mp);
 }

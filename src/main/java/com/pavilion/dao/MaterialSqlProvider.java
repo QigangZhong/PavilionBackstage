@@ -56,6 +56,8 @@ public class MaterialSqlProvider {
             sql.WHERE(" type like '%' || '"+type+"' || '%' ");
         }
 
+        sql.ORDER_BY("create_time desc,last_update_time desc");
+
         return sql.toString()+" limit "+offset+","+limit;
     }
 }

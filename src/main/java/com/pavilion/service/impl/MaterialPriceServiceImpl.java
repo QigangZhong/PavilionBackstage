@@ -17,4 +17,9 @@ public class MaterialPriceServiceImpl implements MaterialPriceService {
     public List<MaterialPrice> getMaterialPrices(int materialId) {
         return materialPriceMapper.getMaterialPrices(materialId);
     }
+
+    @Override
+    public int add(MaterialPrice mp) {
+        return materialPriceMapper.add(mp);
+    }
 }

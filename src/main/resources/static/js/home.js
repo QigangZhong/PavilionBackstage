@@ -71,6 +71,8 @@ function createTab(iframeId, srcUrl, title) {
         return false;
     }
 
+    layer.load(0, { shade: 0.3});
+
     //新增一个Tab项
     element.tabAdd('tabHead', {
         title: title
@@ -83,6 +85,8 @@ function createTab(iframeId, srcUrl, title) {
     element.init();
     //切换到指定Tab项
     element.tabChange('tabHead', tabId);
+
+    layer.closeAll('loading');
 }
 
 function setIframeHeight(id){

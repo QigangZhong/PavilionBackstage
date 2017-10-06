@@ -39,7 +39,8 @@ public class PrivilegeFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String url=((HttpServletRequest)servletRequest).getRequestURI();
-        if(url.endsWith(".css") || url.endsWith(".js") || url.endsWith(".ico") || url.endsWith(".jpg")|| url.endsWith(".png") || url.endsWith("woff")){
+        if(url=="/" || url.endsWith(".css") || url.endsWith(".js") || url.endsWith(".ico") || url.endsWith(".jpg")||
+                url.endsWith(".png") || url.endsWith("woff") || url.endsWith(".gif")){
             //资源文件放行
             filterChain.doFilter(servletRequest,servletResponse);
             return;
