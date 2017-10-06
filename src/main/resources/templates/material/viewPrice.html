@@ -23,7 +23,7 @@
         table.render({
             id:'priceTableId',
             elem:'#priceTable',
-            url:'/material/getPriceInfo?materialId='+[[${materialId}]],
+            url:'/material/getPriceInfo?materialId='+[[${materialId}]]+'&tmp='+Date.parse(new Date()),
             //height:500,
             width:325,
             loading:true,
