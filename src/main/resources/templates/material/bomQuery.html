@@ -33,15 +33,12 @@
         <input class="layui-input" name="type" id="type" placeholder="类型" autocomplete="off">
     </div>
     <button class="layui-btn" data-type="search"><i class="layui-icon">&#xe615;</i></button>
-    <button class="layui-btn" data-type="refresh"><i class="layui-icon">ဂ</i></button>
+    <span>总价:123567.1234</span>
 </div>
 
 <table id="mtlTable" lay-filter="mtlTableFilter">
 </table>
 
-<script type="text/html" id="mtlOp">
-    <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="viewPrice">查看阶梯价</a>
-</script>
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script>
     var element;
@@ -57,7 +54,7 @@
             elem:'#mtlTable',
             url:'/material/query',
             //height:500,
-            width:947,
+            width:946,
             page:true,
             limits: [20,50,100],
             limit:20,
@@ -65,12 +62,11 @@
             cols:  [[ //标题栏
                 {checkbox: true, fixed:true},
                 {field: 'id', title: 'ID', width: 60, sort:true, fixed:true},
-                {field: 'cpscode', title: '子件编码', width: 150},
-                {field: 'cinvname', title: '子件名称', width: 120},
-                {field: 'cinvstd', title: '规格型号', width: 220},
+                {field: 'cpscode', title: '子件编码', width: 120},
+                {field: 'cinvname', title: '子件名称', width: 150},
+                {field: 'cinvstd', title: '规格型号', width: 320},
                 {field: 'type', title: '类型', width: 120},
-                {field: 'ipsquantity', title: '基本用量分子', width: 120},
-                {fixed: 'right', align: 'center', width: 100, toolbar:"#mtlOp"}
+                {field: 'ipsquantity', title: '基本用量分子', width: 120, edit:'text'}
             ]]
         });
 
@@ -90,6 +86,12 @@
                     });
                 });
             }
+        });
+        table.on('edit(mtlTableFilter)',function(obj){
+            var value =obj.value
+                ,data =obj.data
+                ,field =obj.field;
+            layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
         });
 
         var $ = layui.$, active = {

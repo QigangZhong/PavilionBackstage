@@ -23,19 +23,19 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">损耗：</label>
+                <label class="layui-form-label">损耗(%)：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="wear" th:value="${cost.wear}" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">管理：</label>
+                <label class="layui-form-label">管理(%)：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="management" th:value="${cost.management}" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">销售：</label>
+                <label class="layui-form-label">销售(%)：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="sale" th:value="${cost.sale}" autocomplete="off" class="layui-input">
                 </div>
@@ -55,19 +55,19 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">损耗：</label>
+                <label class="layui-form-label">损耗(%)：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="wear1" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">管理：</label>
+                <label class="layui-form-label">管理(%)：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="management1" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">销售：</label>
+                <label class="layui-form-label">销售(%)：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="sale1" autocomplete="off" class="layui-input">
                 </div>
@@ -76,11 +76,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">倍数：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="beishu" placeholder="输入倍数计算总工时"  autocomplete="off" class="layui-input">
+                    <input type="text" name="beishu" data-type="beishu" placeholder="输入倍数计算总工时"  autocomplete="off" class="layui-input">
                 </div>
-                <!--<div class="layui-input-inline">
-                    <button class="layui-btn" style="margin-left: 112px;"  lay-submit lay-filter="btnCalc">输入倍数计算总工时</button>
-                </div>-->
             </div>
         </div>
     </form>
@@ -109,31 +106,15 @@
             return false;
         });
 
-        form.on('submit(btnCalulate)',function (data) {
-            var id=data.field.id;
-
-            $.post("/user/resetPwd",{userId:id},function (result) {
-                if(0!=result.code){
-                    layer.msg(result.msg,{offset:"10px"});
-                    return false;
-                }
-                layer.open({
-                    type: 1
-                    ,offset: "10px"
-                    ,id: 'promptPwd'
-                    ,content: '<div style="padding: 20px 100px;">新密码:<span style="color:red">'+ result.data +'</span>, 已尝试发送新密码邮件给该用户</div>'
-                    ,btn: '知道了'
-                    ,yes: function(){
-                        layer.closeAll();
-                    }
-                });
-            });
-
-            return false;
+        $('input[name=beishu]').on('input', function(){
+            var t=$(this).val();
+            if(!isNaN(t)){
+                $('input[name=labor1]').val(($('input[name=labor]').val()*t).toFixed(2));
+                $('input[name=wear1]').val(($('input[name=wear]').val()*t).toFixed(2));
+                $('input[name=management1]').val(($('input[name=management]').val()*t).toFixed(2));
+                $('input[name=sale1]').val(($('input[name=sale]').val()*t).toFixed(2));
+            }
         });
-
-        //重新渲染checkbox,否则动态生成的checkbox点击无效
-        form.render('checkbox');
     });
 </script>
 
