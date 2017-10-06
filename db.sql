@@ -79,6 +79,8 @@ create table material
   last_update_time datetime,
   deleted int NOT NULL default 0
 );
+CREATE UNIQUE INDEX cpscode_unique_index on material (cpscode);
+
 insert into material values(NULL,'3E0515','绿光模块','EVO-53X-30 20*34.04*29.3mm 3.3W','L',2,0,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
 
 create table material_price

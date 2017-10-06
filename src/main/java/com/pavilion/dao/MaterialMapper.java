@@ -16,6 +16,15 @@ public interface MaterialMapper {
 
     int updateByPrimaryKeySelective(Material record);
 
+    @Update("update material set\n" +
+            "  cpscode=#{cpscode},\n" +
+            "  cinvname=#{cinvname},\n" +
+            "  cinvstd=#{cinvstd},\n" +
+            "  type=#{type},\n" +
+            "  ipsquantity=#{ipsquantity},\n" +
+            "  total_price=(#{ipsquantity}*(select material_price.price from material_price where material_id=#{id} and material_price.unit<=#{ipsquantity} ORDER BY material_price.unit desc)),\n" +
+            "  last_update_time=datetime(CURRENT_TIMESTAMP,'localtime')\n" +
+            "where id=#{id}")
     int updateByPrimaryKey(Material record);
 
     @Select("select count(1) from material")

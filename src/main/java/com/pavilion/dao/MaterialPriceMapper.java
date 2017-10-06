@@ -1,12 +1,14 @@
 package com.pavilion.dao;
 
 import com.pavilion.model.MaterialPrice;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 public interface MaterialPriceMapper {
+    @Delete("delete from material_price where id=#{id}")
     int deleteByPrimaryKey(Integer id);
 
     int insert(MaterialPrice record);
@@ -19,7 +21,7 @@ public interface MaterialPriceMapper {
 
     int updateByPrimaryKey(MaterialPrice record);
 
-    @Select("select * from material_price where material_id=#{materialId}")
+    @Select("select * from material_price where material_id=#{materialId} order by unit")
     List<MaterialPrice> getMaterialPrices(int materialId);
 
     @Insert("insert into material_price \n" +

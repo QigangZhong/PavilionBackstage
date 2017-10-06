@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.util.StringUtils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -191,9 +193,41 @@ public class MaterialController {
 
     @RequestMapping(value = "/updateMaterial", method= RequestMethod.POST)
     @ResponseBody
-    public Result<Double> updateMaterial(Material mtl){
+    public Result<Double> updateMaterial(Material mtl,String field){
+        if(StringUtils.isEmptyOrWhitespace(mtl.getCpscode()) || StringUtils.isEmptyOrWhitespace(mtl.getCinvname()) || StringUtils.isEmptyOrWhitespace(mtl.getCinvstd()) ||
+                StringUtils.isEmptyOrWhitespace(mtl.getType())){
+            return Result.parameterError();
+        }
 
-        return Result.success("修改成功");
+        if(mtl.getIpsquantity()<=0){
+            mtl.setIpsquantity(0);
+        }
+
+        if(field=="cpscode") {
+            Material existMtl = materialService.getByCpscode(mtl.getCpscode());
+            if (existMtl != null) {
+                return Result.fail("子件编码[ " + existMtl.getCpscode() + " ]已存在");
+            }
+        }
+
+        int row = materialService.updateMaterial(mtl);
+        if(row>0) {
+            Double totalPrice = materialService.getTotalPrice();
+            return Result.success("修改成功",totalPrice);
+        }else{
+            return Result.fail(-1,"修改失败",Double.valueOf(0));
+        }
+    }
+
+    @RequestMapping(value = "/deletePrice", method= RequestMethod.POST)
+    @ResponseBody
+    public Result<String> deletePrice(int mtlPriceId){
+        int row = materialPriceService.deleteById(mtlPriceId);
+        if(row>0) {
+            return Result.success("删除成功");
+        }else{
+            return Result.fail("删除失败");
+        }
     }
 
 }

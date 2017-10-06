@@ -22,4 +22,9 @@ public class MaterialPriceServiceImpl implements MaterialPriceService {
     public int add(MaterialPrice mp) {
         return materialPriceMapper.add(mp);
     }
+
+    @Override
+    public int deleteById(int mtlPriceId) {
+        return materialPriceMapper.deleteByPrimaryKey(mtlPriceId);
+    }
 }

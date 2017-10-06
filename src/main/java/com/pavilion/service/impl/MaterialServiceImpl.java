@@ -55,5 +55,10 @@ public class MaterialServiceImpl implements MaterialService {
         return materialMapper.getByCpscode(cpscode);
     }
 
+    @Override
+    public int updateMaterial(Material mtl) {
+        return materialMapper.updateByPrimaryKey(mtl);
+    }
+
 
 }

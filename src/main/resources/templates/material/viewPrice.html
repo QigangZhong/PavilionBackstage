@@ -2,6 +2,19 @@
 <input type="hidden" id="materialId" th:value="${materialId}" />
 <table id="priceTable" lay-filter="priceTableFilter">
 </table>
+<script type="text/html" id="mtlPriceOp">
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+</script>
+
+<div class="demoTable">
+    <div class="layui-inline">
+        <input class="layui-input" name="unit" id="unit" style="width:100px;" placeholder="单位(unit)" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="price" id="price" style="width:100px;" placeholder="价格(USD)" autocomplete="off">
+    </div>
+    <button class="layui-btn" data-type="addMtlPrice"><i class="layui-icon"></i></button>
+</div>
 
 <script src="/js/jquery.min.js" ></script>
 <script th:inline="javascript">
@@ -12,13 +25,66 @@
             elem:'#priceTable',
             url:'/material/getPriceInfo?materialId='+[[${materialId}]],
             //height:500,
-            width:284,
+            width:325,
             loading:true,
             cols:  [[
                 {field: 'id', title: 'ID', width: 60, sort:true, fixed:true},
                 {field: 'unit', title: '单位(unit)', width: 100},
-                {field: 'price', title: '价格(USD)', width: 120}
+                {field: 'price', title: '价格(USD)', width: 100},
+                {fixed: 'right', align: 'center', width: 60, toolbar:"#mtlPriceOp"}
             ]]
+        });
+
+        //监听工具条
+        table.on('tool(priceTableFilter)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'del'){ //删除
+                layer.confirm('确定删除吗?',{offset:'10px'}, function(index){
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    $.post("/material/deletePrice",{mtlPriceId:data.id},function (data) {
+                        layer.msg(data.msg,{offset:'10px'});
+                    });
+                });
+                return false;
+            }
+        });
+
+        var $ = layui.$, active = {
+            addMtlPrice:function () {
+                var materialId=[[${materialId}]];
+                var unit=$("#unit").val();
+                var price=$("#price").val();
+
+                if(unit.replace(/(^s*)|(s*$)/g, "").length ==0 || price.replace(/(^s*)|(s*$)/g, "").length ==0){
+                    layer.msg("不能为空",{offset:'10px'});
+                    return false;
+                }
+
+                layer.load(0, { shade: 0.3});
+
+                $.post("/material/addPrice",{mtlId:materialId,unit:unit,price:price},function (data) {
+                    table.reload('priceTableId', {
+                        where: {
+                            random:Date.parse(new Date())
+                        }
+                    });
+
+                    layer.closeAll('loading');
+                    layer.msg(data.msg,{offset:'10px'});
+                });
+
+                return false;
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
         });
     });
 </script>

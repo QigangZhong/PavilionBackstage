@@ -20,4 +20,6 @@ public interface MaterialService {
     int add(Material mtl);
 
     Material getByCpscode(String cpscode);
+
+    int updateMaterial(Material mtl);
 }

@@ -89,10 +89,10 @@
             cols:  [[ //标题栏
                 {checkbox: true, fixed:true},
                 {field: 'id', title: 'ID', width: 60, sort:true, fixed:true},
-                {field: 'cpscode', title: '子件编码', width: 120},
-                {field: 'cinvname', title: '子件名称', width: 150},
-                {field: 'cinvstd', title: '规格型号', width: 320},
-                {field: 'type', title: '类型', width: 120},
+                {field: 'cpscode', title: '子件编码', width: 120, edit:'text'},
+                {field: 'cinvname', title: '子件名称', width: 150, edit:'text'},
+                {field: 'cinvstd', title: '规格型号', width: 320, edit:'text'},
+                {field: 'type', title: '类型', width: 120, edit:'text'},
                 {field: 'ipsquantity', title: '基本用量分子', width: 120, edit:'text'},
                 {fixed: 'right', align: 'center', width: 100, toolbar:"#mtlOp"}
             ]]
@@ -120,11 +120,18 @@
                 ,data =obj.data
                 ,field =obj.field;
 
-            $("#totalPrice").html('<i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i>');
-            $.post("/material/updateIpsQty",{mtlId:data.id,ipsQty:data.ipsquantity},function (data) {
-                $("#totalPrice").html("总价:"+data);
+            layer.load(0, { shade: 0.3});
+            $.post("/material/updateMaterial",{id:data.id,cpscode:data.cpscode,cinvname:data.cinvname,cinvstd:data.cinvstd,type:data.type,ipsquantity:data.ipsquantity, field:field},function (data) {
+                if(data.code!=0){
+                    layer.closeAll('loading');
+                    layer.msg(data.msg,{offset:'10px'});
+                    return false;
+                }
+                $("#totalPrice").html("总价:"+data.data);
+                layer.closeAll('loading');
+                layer.msg(data.msg,{offset:'10px'});
+                return false;
             });
-            layer.msg('['+data.cpscode+']'+'基本用量分子更改为：'+ value,{offset:'10px'});
         });
 
         var $ = layui.$, active = {
