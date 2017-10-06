@@ -34,4 +34,14 @@ public class MaterialServiceImpl implements MaterialService {
         int offset=(page-1)*limit;
         return materialMapper.getSearchPagedMaterials(offset,limit,cpscode,cinvname,cinvstd,type);
     }
+
+    @Override
+    public int updateIpsQty(int mtlId, int ipsQty) {
+        return materialMapper.updateIpsQty(mtlId,ipsQty);
+    }
+
+    @Override
+    public Double getTotalPrice() {
+        return materialMapper.getTotalPrice();
+    }
 }

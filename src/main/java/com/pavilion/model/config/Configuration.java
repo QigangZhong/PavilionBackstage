@@ -1,4 +1,4 @@
-package com.pavilion.model;
+package com.pavilion.model.config;
 
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;

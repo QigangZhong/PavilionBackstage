@@ -15,13 +15,17 @@ public class Material implements Serializable {
 
     private String type;
 
+    private Double totalPrice;
+
     private String createTime;
 
     private String lastUpdateTime;
 
+    private int deleted;
+
     private static final long serialVersionUID = 1L;
 
-    public Material(Integer id, String cpscode, String cinvname, String cinvstd, Integer ipsquantity, String type, String createTime, String lastUpdateTime) {
+    public Material(Integer id, String cpscode, String cinvname, String cinvstd, Integer ipsquantity, String type, String createTime, String lastUpdateTime,Double totalPrice,int deleted) {
         this.id = id;
         this.cpscode = cpscode;
         this.cinvname = cinvname;
@@ -30,6 +34,8 @@ public class Material implements Serializable {
         this.type = type;
         this.createTime = createTime;
         this.lastUpdateTime = lastUpdateTime;
+        this.totalPrice=totalPrice;
+        this.deleted=deleted;
     }
 
     public Material() {
@@ -98,5 +104,21 @@ public class Material implements Serializable {
 
     public void setLastUpdateTime(String lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime == null ? null : lastUpdateTime.trim();
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 }

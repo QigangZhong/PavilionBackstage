@@ -69,31 +69,36 @@
                     return false;
                 }
                 layer.msg(result.msg,{offset:"10px"});
+                layer.closeAll();
             });
 
             return false;
         });
 
+        //监听重置密码
         form.on('submit(resetPwd)',function (data) {
-            var id=data.field.id;
-
-            $.post("/user/resetPwd",{userId:id},function (result) {
-                if(0!=result.code){
-                    layer.msg(result.msg,{offset:"10px"});
-                    return false;
-                }
-                layer.open({
-                    type: 1
-                    ,offset: "10px"
-                    ,id: 'promptPwd'
-                    ,content: '<div style="padding: 20px 100px;">新密码:<span style="color:red">'+ result.data +'</span>, 已尝试发送新密码邮件给该用户</div>'
-                    ,btn: '知道了'
-                    ,yes: function(){
-                        layer.closeAll();
+            layer.confirm('确定重置该用户密码?', {icon: 3, title:'提示',offset:'10px'}, function(index){
+                var id=data.field.id;
+                $.post("/user/resetPwd",{userId:id},function (result) {
+                    if(0!=result.code){
+                        layer.msg(result.msg,{offset:"10px"});
+                        return false;
                     }
+                    layer.open({
+                        type: 1
+                        ,offset: "10px"
+                        ,id: 'promptPwd'
+                        ,content: '<div style="padding: 20px 100px;">新密码:<span style="color:red">'+ result.data +'</span>, 已尝试发送新密码邮件给该用户</div>'
+                        ,btn: '知道了'
+                        ,yes: function(){
+                            layer.closeAll();
+                        }
+                    });
                 });
-            });
 
+                layer.close(index);
+                return false;
+            });
             return false;
         });
 

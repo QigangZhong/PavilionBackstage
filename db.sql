@@ -1,8 +1,11 @@
-drop table user;
-drop table role;
-drop table menu;
-drop table role_menu;
-drop table user_role;
+drop table IF EXISTS user;
+drop table IF EXISTS role;
+drop table IF EXISTS menu;
+drop table IF EXISTS role_menu;
+drop table IF EXISTS user_role;
+drop table IF EXISTS cost;
+drop table IF EXISTS material;
+drop table IF EXISTS material_price;
 
 create table user
 (
@@ -69,12 +72,14 @@ create table material
   cpscode varchar(128), --子件编码
   cinvname nvarchar(128), --子件名称
   cinvstd nvarchar(512), --规格型号
-  ipsquantity int, --基本用量分子
   type varchar(50), --类型
+  ipsquantity int, --基本用量分子
+  total_price decimal(19,6),--根据基本用量分子以及阶梯价格计算出来的总价
   create_time datetime,
-  last_update_time datetime
+  last_update_time datetime,
+  deleted int NOT NULL default 0
 );
-insert into material values(NULL,'3E0515','绿光模块','规格型号',2,'L',datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material values(NULL,'3E0515','绿光模块','EVO-53X-30 20*34.04*29.3mm 3.3W','L',2,0,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
 
 create table material_price
 (
@@ -83,16 +88,21 @@ create table material_price
   unit int,
   price decimal(19,6),
   create_time datetime NOT NULL,
-  last_update_time datetime
+  last_update_time datetime,
+  deleted int NOT NULL default 0
 );
-insert into material_price values(NULL ,1,1,10.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
-insert into material_price values(NULL ,1,10,9.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
-insert into material_price values(NULL ,1,50,8.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
-insert into material_price values(NULL ,1,100,7.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
-insert into material_price values(NULL ,1,500,6.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
-insert into material_price values(NULL ,1,1000,5.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
-insert into material_price values(NULL ,1,1500,4.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
-insert into material_price values(NULL ,1,2000,3.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into material_price values(NULL ,1,1,10.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+insert into material_price values(NULL ,1,10,9.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+insert into material_price values(NULL ,1,50,8.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+insert into material_price values(NULL ,1,100,7.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+insert into material_price values(NULL ,1,500,6.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+insert into material_price values(NULL ,1,1000,5.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+insert into material_price values(NULL ,1,1500,4.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+insert into material_price values(NULL ,1,2000,3.00,datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0);
+
+--更新材料总价
+update material set total_price=(material.ipsquantity* (select material_price.price from material_price where material_price.unit<=material.ipsquantity ORDER BY material_price.unit desc));
+
 
 
 

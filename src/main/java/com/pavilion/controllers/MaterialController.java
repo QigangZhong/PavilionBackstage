@@ -82,6 +82,7 @@ public class MaterialController {
         model.addAttribute("cost",cost);
         return "material/calcWorkTime";
     }
+
     @RequestMapping(value = "/updateWorkTime", method= RequestMethod.POST)
     @ResponseBody
     public Result<String> updateWorkTime(Double labor, Double wear, Double management, Double sale){
@@ -95,5 +96,33 @@ public class MaterialController {
         costService.update(cost);
 
         return Result.success("更新成功");
+    }
+
+    @RequestMapping(value = "/getTotalPrice", method= RequestMethod.GET)
+    @ResponseBody
+    public Double getTotalPrice(){
+        try {
+            Double totalPrice = materialService.getTotalPrice();
+            return totalPrice;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return Double.valueOf(0);
+        }
+    }
+
+    @RequestMapping(value = "/updateIpsQty", method= RequestMethod.POST)
+    @ResponseBody
+    public Double updateIpsQty(int mtlId,int ipsQty){
+        try {
+            Double totalPrice=Double.valueOf(0);
+            int row = materialService.updateIpsQty(mtlId,ipsQty);
+            if(row>0) {
+                totalPrice = materialService.getTotalPrice();
+            }
+            return totalPrice;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return Double.valueOf(0);
+        }
     }
 }

@@ -12,4 +12,8 @@ public interface MaterialService {
     int getSearchCount(String cpscode,String cinvname,String cinvstd,String type);
 
     List<Material> getSearchPagedMaterials(int page, int limit, String cpscode,String cinvname,String cinvstd,String type);
+
+    int updateIpsQty(int mtlId,int ipsQty);
+
+    Double getTotalPrice();
 }

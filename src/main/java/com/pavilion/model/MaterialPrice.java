@@ -15,15 +15,18 @@ public class MaterialPrice implements Serializable {
 
     private String lastUpdateTime;
 
+    private int deleted;
+
     private static final long serialVersionUID = 1L;
 
-    public MaterialPrice(Integer id, Integer materialId, Integer unit, Double price, String createTime, String lastUpdateTime) {
+    public MaterialPrice(Integer id, Integer materialId, Integer unit, Double price, String createTime, String lastUpdateTime,int deleted) {
         this.id = id;
         this.materialId = materialId;
         this.unit = unit;
         this.price = price;
         this.createTime = createTime;
         this.lastUpdateTime = lastUpdateTime;
+        this.deleted=deleted;
     }
 
     public MaterialPrice() {
@@ -76,5 +79,13 @@ public class MaterialPrice implements Serializable {
 
     public void setLastUpdateTime(String lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime == null ? null : lastUpdateTime.trim();
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 }

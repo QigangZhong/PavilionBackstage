@@ -33,11 +33,14 @@
         <input class="layui-input" name="type" id="type" placeholder="类型" autocomplete="off">
     </div>
     <button class="layui-btn" data-type="search"><i class="layui-icon">&#xe615;</i></button>
-    <span>总价:123567.1234</span>
+    <span id="totalPrice" style="margin-left: 15px;">总价:123567.1234</span>
 </div>
 
 <table id="mtlTable" lay-filter="mtlTableFilter">
 </table>
+<p>注:</p>
+<p>1. 基本用量分子可以修改</p>
+<p>2. 多人同时修改基本用量分子时,总价会依据最近一次修改的值计算</p>
 
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script>
@@ -91,7 +94,12 @@
             var value =obj.value
                 ,data =obj.data
                 ,field =obj.field;
-            layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+
+            $("#totalPrice").html('<i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i>');
+            $.post("/material/updateIpsQty",{mtlId:data.id,ipsQty:data.ipsquantity},function (data) {
+                $("#totalPrice").html("总价:"+data);
+            });
+            layer.msg('['+data.cpscode+']'+'基本用量分子更改为：'+ value,{offset:'10px'});
         });
 
         var $ = layui.$, active = {
@@ -121,6 +129,13 @@
         $('.demoTable .layui-btn').on('click', function(){
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
+        });
+    });
+    
+    $(function () {
+        $("#totalPrice").html('<i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i>');
+        $.get("/material/getTotalPrice",function (data) {
+            $("#totalPrice").html("总价:"+data);
         });
     });
 </script>

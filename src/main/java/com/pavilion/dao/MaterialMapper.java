@@ -4,6 +4,7 @@ import com.pavilion.model.Material;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -31,4 +32,10 @@ public interface MaterialMapper {
 
     @SelectProvider(type=MaterialSqlProvider.class,method="getSearchPagedMaterials")
     List<Material> getSearchPagedMaterials(int offset, int limit, String cpscode, String cinvname, String cinvstd, String type);
+
+    @Select("select sum(total_price) as totalPrice from material")
+    Double getTotalPrice();
+
+    @Update("update material set ipsquantity=#{ipsquantity},total_price=(#{ipsquantity}*(select material_price.price from material_price where material_price.unit<=#{ipsquantity} ORDER BY material_price.unit desc)) where id=#{id}")
+    int updateIpsQty(@Param("id") int id, @Param("ipsquantity") int ipsquantity);
 }
