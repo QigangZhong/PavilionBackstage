@@ -17,11 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.List;
 
 @Controller
@@ -238,6 +240,36 @@ public class MaterialController {
             return Result.success("删除成功");
         }else{
             return Result.fail("删除失败");
+        }
+    }
+
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @ResponseBody
+    public String upload(@RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            try {
+                //获取jar包所在的路径
+                String jarPath=MaterialController.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                jarPath= URLDecoder.decode(jarPath, "UTF-8");
+                File uploadedFile=new File(jarPath+"upload/"+file.getOriginalFilename());
+
+                BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream(uploadedFile));
+                out.write(file.getBytes());
+                out.flush();
+                out.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return "上传失败," + e.getMessage();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "上传失败," + e.getMessage();
+            }catch (Exception ex){
+                ex.printStackTrace();
+                return "上传失败,"+ ex.getMessage();
+            }
+            return "上传成功";
+        } else {
+            return "上传失败，因为文件是空的.";
         }
     }
 }

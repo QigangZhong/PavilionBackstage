@@ -67,6 +67,17 @@
     <button class="layui-btn" data-type="addMtl"><i class="layui-icon"></i></button>
 </div>
 
+<div class="layui-upload-drag" id="uploadExcel">
+    <i class="layui-icon"></i>
+    <p>点击上传excel，或将excel文件拖拽到此处进行数据导入</p>
+</div>
+<div>
+    <p>说明:</p>
+    <p>1. 仅支持单文件上传</p>
+    <p>2. 文件仅支持.xlsx/.xls格式,文件大小控制在10M以内</p>
+    <p>3. 数据导入的exel文件需要严格按照示例文件的格式来</p>
+</div>
+
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script>
     var element;
@@ -219,6 +230,30 @@
         $('.demoTable .layui-btn').on('click', function(){
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
+        });
+    });
+
+    layui.use('upload',function() {
+        var $ = layui.jquery;
+        var upload = layui.upload;
+
+        upload.render({
+            elem:'#uploadExcel'
+            ,url:'/material/upload'
+            ,accept:'file'
+            ,exts:'xlsx|xls'
+            ,multiple:false
+            ,before:function(obj){
+                obj.preview(function(index,file,result){
+                    $('#demo1').attr('src',result);
+                });
+            }
+            ,done:function(res){
+                console.log(res)
+            }
+            ,error:function (index,upload) {
+
+            }
         });
     });
 </script>
