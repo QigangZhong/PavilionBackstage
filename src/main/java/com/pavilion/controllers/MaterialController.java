@@ -11,6 +11,10 @@ import com.pavilion.service.CostService;
 import com.pavilion.service.MaterialPriceService;
 import com.pavilion.service.MaterialService;
 import com.pavilion.util.FileUtil;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -253,7 +257,7 @@ public class MaterialController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
-    public String upload(@RequestParam("file") MultipartFile file) {
+    public Result<String> upload(@RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
             try {
                 //获取jar包所在的路径
@@ -273,20 +277,49 @@ public class MaterialController {
                 out.flush();
                 out.close();
 
+                //Excel文件
+                HSSFWorkbook wb = new HSSFWorkbook(file.getInputStream());
+                //Excel工作表
+                HSSFSheet sheet = wb.getSheetAt(0);
+                HSSFRow firstRow = sheet.getRow(0);
+                int lastColIndex=firstRow.getLastCellNum();
+                if(lastColIndex<4){
+                    return Result.fail("无阶梯价格信息, 导入的excel格式必须严格按照模板来");
+                }
+
+                //处理表头信息
+                for(int j=0;j<=lastColIndex;j++){
+                    String unitStr=firstRow.getCell(j).getStringCellValue().replaceFirst(".*?(\\d+).*", "$1");
+                    if(StringUtils.isEmptyOrWhitespace(unitStr)){
+                        logger.error("表头列["+(j+1)+"]数据错误");
+                    }
+                    int unit=Integer.parseInt(unitStr);
+                }
+
+
+                for(int i=1;i<=sheet.getLastRowNum();i++){
+                    HSSFRow row = sheet.getRow(i);
+                    Material mtl=new Material();
+                    String cpscode = row.getCell(0).getStringCellValue();
+                    String type = row.getCell(1).getStringCellValue();
+                    String cinvname = row.getCell(2).getStringCellValue();
+                    String cinvstd = row.getCell(3).getStringCellValue();
+                    for(int j=4;j<=lastColIndex;j++){
+
+                    }
+
+                }
+
+
+
                 logger.info("原始上传文件名称:"+file.getOriginalFilename()+"  转换后的名称:"+uploadedFile.getAbsolutePath());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return "上传失败," + e.getMessage();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "上传失败," + e.getMessage();
             }catch (Exception ex){
                 ex.printStackTrace();
-                return "上传失败,"+ ex.getMessage();
+                return Result.fail("上传失败,"+ ex.getMessage());
             }
-            return "上传成功";
+            return Result.success("上传成功");
         } else {
-            return "上传失败，因为文件是空的.";
+            return Result.fail("上传失败，因为文件是空的.");
         }
     }
 }
