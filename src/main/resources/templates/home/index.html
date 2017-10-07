@@ -18,17 +18,8 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
+        <!--顶部菜单栏-->
         <div class="layui-logo">Pavilion Backstage</div>
-        <!--顶部菜单-->
-        <!--<ul id="left" class="layui-nav layui-layout-left">
-            <li id="hideLeft" class="layui-nav-item"><a href="javascript:;">隐藏侧边栏</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">高级功能</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">权限配置</a></dd>
-                </dl>
-            </li>
-        </ul>-->
 
         <ul th:if="${session==null || session.user == null}" class="layui-nav layui-layout-right">
             <li id="loginbtn" class="layui-nav-item"><a href="javascript:;">登陆</a></li>
@@ -52,28 +43,7 @@
 
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
-            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <!--<ul class="layui-nav layui-nav-tree" lay-filter="test1">
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">用户管理</a>
-                    <dl class="layui-nav-child">
-                        <dd id="menu1"><a href="javascript:createTab('user_query','/user/query','用户查询');">用户查询</a></dd>
-                        <dd id="menu2"><a href="javascript:createTab('user_add','/user/add','添加用户');">添加用户</a></dd>
-                    </dl>
-                </li>
-            </ul>
-            <ul class="layui-nav layui-nav-tree" lay-filter="test2">
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">材料管理</a>
-                    <dl class="layui-nav-child">
-                        <dd id="menu3"><a href="javascript:createTab('material_bomQuery','/material/bomQuery','BOM查询');">BOM查询</a></dd>
-                        <dd id="menu4"><a href="javascript:createTab('material_bomMaintain','/material/bomMaintain','BOM维护');">BOM维护</a></dd>
-                        <dd id="menu5"><a href="javascript:createTab('material_calcWorkTime','/material/calcWorkTime','计算工时');">工时计算</a></dd>
-                    </dl>
-                </li>
-            </ul>-->
-
-            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <!-- 左侧导航区域 -->
             <ul class="layui-nav layui-nav-tree" th:each="menu1:${menuList}">
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;" th:text="${menu1.name}"></a>
