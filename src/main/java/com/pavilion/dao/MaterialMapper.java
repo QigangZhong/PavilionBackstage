@@ -49,8 +49,16 @@ public interface MaterialMapper {
     @Insert("insert into material \n" +
             "(cpscode,cinvname,cinvstd,type,ipsquantity,total_price,create_time,last_update_time,deleted) \n" +
             "values(#{cpscode},#{cinvname},#{cinvstd},#{type},#{ipsquantity},#{totalPrice},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0)")
+    @SelectKey(statement = "SELECT LAST_INSERT_ROWID()",keyColumn = "id",keyProperty = "id",before = false,resultType = Integer.class)
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn = "id")
     int add(Material mtl);
 
     @Select("select * from material where cpscode=#{cpscode}")
     Material getByCpscode(String cpscode);
+
+    @Delete("delete from material;DELETE from material_price;")
+    int deleteAll();
+
+    @Update("update material set total_price=(material.ipsquantity* (select material_price.price from material_price where material_id=material.id and material_price.unit<=material.ipsquantity ORDER BY material_price.unit desc));")
+    int calcTotalPrice();
 }

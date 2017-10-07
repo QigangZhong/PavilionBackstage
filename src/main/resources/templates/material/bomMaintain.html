@@ -69,13 +69,11 @@
 
 <div class="layui-upload-drag" id="uploadExcel">
     <i class="layui-icon"></i>
-    <p>点击上传excel，或将excel文件拖拽到此处进行数据导入</p>
-</div>
-<div>
-    <p>说明:</p>
-    <p>1. 仅支持单文件上传</p>
-    <p>2. 文件仅支持.xlsx/.xls格式,文件大小控制在10M以内</p>
-    <p>3. 数据导入的exel文件需要严格按照示例文件的格式来</p>
+    <div style="text-align: left">
+        <p>1. 点击上传或拖拽excel到此处批量导入数据</p>
+        <p>2. 限制xls/xlsx格式, 大小10M以内</p>
+        <p>3. 导入数据格式请参考示例文件</p>
+    </div>
 </div>
 
 <script src="/layui/layui.js" charset="utf-8"></script>
@@ -244,15 +242,19 @@
             ,exts:'xlsx|xls'
             ,multiple:false
             ,before:function(obj){
-                obj.preview(function(index,file,result){
-                    $('#demo1').attr('src',result);
-                });
+                layer.load(0, { shade: 0.3});
             }
             ,done:function(res){
-                console.log(res)
+                layer.closeAll('loading');
+                layer.msg(res.msg,{offset:"10px"});
+                if(res.code==0){
+                    //上传excel数据导入成功后刷新页面
+                    window.location.reload();
+                }
             }
             ,error:function (index,upload) {
-
+                layer.closeAll('loading');
+                layer.msg("上传出现错误了");
             }
         });
     });

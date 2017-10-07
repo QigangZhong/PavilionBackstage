@@ -1,6 +1,9 @@
 package com.pavilion.model.dto;
 
-public class MaterialDto {
+import java.io.Serializable;
+import java.util.List;
+
+public class MaterialDto implements Serializable {
     private Integer id;
 
     private String cpscode;
@@ -12,6 +15,8 @@ public class MaterialDto {
     private Integer ipsquantity;
 
     private String type;
+
+    private List<MaterialPriceDto> prices;
 
     public MaterialDto(){}
 
@@ -70,5 +75,13 @@ public class MaterialDto {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public List<MaterialPriceDto> getPrices() {
+        return prices;
+    }
+
+    public void setPrices(List<MaterialPriceDto> prices) {
+        this.prices = prices;
     }
 }

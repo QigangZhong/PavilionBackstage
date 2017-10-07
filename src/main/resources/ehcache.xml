@@ -37,17 +37,17 @@
    -->
     <defaultCache
             eternal="false"
-            maxElementsInMemory="1000"
-            overflowToDisk="false"
-            diskPersistent="false"
+            maxElementsInMemory="1000000"
+            overflowToDisk="true"
+            diskPersistent="true"
             timeToIdleSeconds="0"
-            timeToLiveSeconds="600"
+            timeToLiveSeconds="86400"
             memoryStoreEvictionPolicy="LRU" />
 
     <cache
             name="mtl"
             eternal="false"
-            maxElementsInMemory="1000"
+            maxElementsInMemory="1000000"
             overflowToDisk="true"
             diskPersistent="true"
             timeToIdleSeconds="0"

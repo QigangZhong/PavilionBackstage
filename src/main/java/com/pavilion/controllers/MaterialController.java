@@ -10,11 +10,9 @@ import com.pavilion.model.dto.TableData;
 import com.pavilion.service.CostService;
 import com.pavilion.service.MaterialPriceService;
 import com.pavilion.service.MaterialService;
+import com.pavilion.util.EhcacheUtil;
 import com.pavilion.util.FileUtil;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -30,11 +28,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
-import java.io.*;
-import java.net.URLDecoder;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/material")
@@ -258,68 +260,112 @@ public class MaterialController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
     public Result<String> upload(@RequestParam("file") MultipartFile file) {
-        if (!file.isEmpty()) {
-            try {
-                //获取jar包所在的路径
-                /*ApplicationHome home = new ApplicationHome(this.getClass());
-                String uploadedFileDir=home.getDir()+"\\upload\\";
-                File tmp=new File(uploadedFileDir);
-                if(!tmp.exists()){
-                    tmp.mkdir();
-                }
-                String uploadedFilePath=uploadedFileDir+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+file.getOriginalFilename();
-                logger.info(uploadedFilePath);
-                File uploadedFile=new File(uploadedFilePath);*/
+        logger.info("开始处理excel:"+file.getOriginalFilename());
 
-                File uploadedFile=new File(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+ FileUtil.getFileExtension(file.getOriginalFilename()));
-                BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream(uploadedFile));
-                out.write(file.getBytes());
-                out.flush();
-                out.close();
-
-                //Excel文件
-                HSSFWorkbook wb = new HSSFWorkbook(file.getInputStream());
-                //Excel工作表
-                HSSFSheet sheet = wb.getSheetAt(0);
-                HSSFRow firstRow = sheet.getRow(0);
-                int lastColIndex=firstRow.getLastCellNum();
-                if(lastColIndex<4){
-                    return Result.fail("无阶梯价格信息, 导入的excel格式必须严格按照模板来");
-                }
-
-                //处理表头信息
-                for(int j=0;j<=lastColIndex;j++){
-                    String unitStr=firstRow.getCell(j).getStringCellValue().replaceFirst(".*?(\\d+).*", "$1");
-                    if(StringUtils.isEmptyOrWhitespace(unitStr)){
-                        logger.error("表头列["+(j+1)+"]数据错误");
-                    }
-                    int unit=Integer.parseInt(unitStr);
-                }
-
-
-                for(int i=1;i<=sheet.getLastRowNum();i++){
-                    HSSFRow row = sheet.getRow(i);
-                    Material mtl=new Material();
-                    String cpscode = row.getCell(0).getStringCellValue();
-                    String type = row.getCell(1).getStringCellValue();
-                    String cinvname = row.getCell(2).getStringCellValue();
-                    String cinvstd = row.getCell(3).getStringCellValue();
-                    for(int j=4;j<=lastColIndex;j++){
-
-                    }
-
-                }
-
-
-
-                logger.info("原始上传文件名称:"+file.getOriginalFilename()+"  转换后的名称:"+uploadedFile.getAbsolutePath());
-            }catch (Exception ex){
-                ex.printStackTrace();
-                return Result.fail("上传失败,"+ ex.getMessage());
+        try {
+            if (file.isEmpty()) {
+                logger.error("excel文件是空的");
+                return Result.fail("上传失败，因为文件是空的.");
             }
-            return Result.success("上传成功");
-        } else {
-            return Result.fail("上传失败，因为文件是空的.");
+
+            String fileExtension=FileUtil.getFileExtension(file.getOriginalFilename());
+            if(!fileExtension.endsWith("xls") && !fileExtension.endsWith("xlsx")){
+                logger.error("文件格式不正确");
+                return Result.fail("文件格式不正确");
+            }
+
+            //获取jar包所在的路径
+            ApplicationHome home = new ApplicationHome(this.getClass());
+            String uploadedFileDir=home.getDir()+"\\upload\\";
+            File tmp=new File(uploadedFileDir);
+            if(!tmp.exists()){
+                tmp.mkdir();
+            }
+            String uploadedFilePath=uploadedFileDir+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+fileExtension;
+            logger.info("原始文件名:"+file.getOriginalFilename()+",对应上传后的文件:"+uploadedFilePath);
+            File uploadedFile=new File(uploadedFilePath);
+
+            //先保存上传的文件
+            BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream(uploadedFile));
+            out.write(file.getBytes());
+            out.flush();
+            out.close();
+
+            //清除缓存
+            EhcacheUtil.getInstance().removeAll();
+
+            //Excel文件
+            Workbook wb= WorkbookFactory.create(file.getInputStream());
+            //Excel工作表
+            Sheet sheet = wb.getSheetAt(0);
+            Row firstRow = sheet.getRow(0);
+            int lastColIndex=firstRow.getLastCellNum();
+            if(lastColIndex<4){
+                logger.error("无阶梯价格信息, 导入的excel格式必须严格按照模板来");
+                return Result.fail("无阶梯价格信息, 导入的excel格式必须严格按照模板来");
+            }
+
+            Map<Integer , Integer> unitMap = new HashMap<Integer , Integer>();
+            //处理表头信息
+            for(int j=0;j<lastColIndex-1;j++){
+                if(j>=4) {
+                    Cell cellj=firstRow.getCell(j);
+                    cellj.setCellType(CellType.STRING);
+                    String unitStr = cellj.getStringCellValue().replaceFirst(".*?(\\d+).*", "$1");
+                    if (StringUtils.isEmptyOrWhitespace(unitStr)) {
+                        logger.error("表头列[" + (j + 1) + "]数据错误");
+                        return Result.fail("表头列[" + (j + 1) + "]数据错误");
+                    }
+                    int unit = Integer.parseInt(unitStr);
+                    unitMap.put(j,unit);
+                }
+            }
+
+            //循环处理每一行数据
+            for(int i=1;i<=sheet.getLastRowNum();i++){
+                Row row = sheet.getRow(i);
+
+                Cell cell0 = row.getCell(0);
+                cell0.setCellType(CellType.STRING);
+                String cpscode = cell0.getStringCellValue();
+                if(StringUtils.isEmptyOrWhitespace(cpscode)){
+                    return Result.fail("上传失败,行["+i+"]子件编码不能为空");
+                }
+
+                Cell cell1 = row.getCell(1);
+                cell1.setCellType(CellType.STRING);
+                String type = cell1.getStringCellValue();
+
+                Cell cell2 = row.getCell(2);
+                cell2.setCellType(CellType.STRING);
+                String cinvname = cell2.getStringCellValue();
+
+                Cell cell3 = row.getCell(3);
+                cell3.setCellType(CellType.STRING);
+                String cinvstd = cell3.getStringCellValue();
+                MaterialDto tmpMtl=new MaterialDto(0,cpscode,cinvname,cinvstd,0,type);
+
+                List<MaterialPriceDto> tmpPrices=new ArrayList<>();
+                for(int j=4;j<lastColIndex-1;j++){
+                    int unit=unitMap.get(j);
+                    Cell cellj=row.getCell(j);
+                    cellj.setCellType(CellType.NUMERIC);
+                    Double price=cellj.getNumericCellValue();
+                    MaterialPriceDto tmpPrice=new MaterialPriceDto(0,0,unit,price);
+                    tmpPrices.add(tmpPrice);
+                }
+                tmpMtl.setPrices(tmpPrices);
+
+                EhcacheUtil.getInstance().put(tmpMtl.getCpscode(),tmpMtl);
+            }
+
+            //将内存数据批量插入到数据库中
+            materialService.importExcelData();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return Result.fail("上传失败,"+ ex.getMessage());
         }
+        return Result.success("上传成功");
     }
 }

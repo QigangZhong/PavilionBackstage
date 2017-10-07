@@ -1,6 +1,8 @@
 package com.pavilion.model.dto;
 
-public class MaterialPriceDto {
+import java.io.Serializable;
+
+public class MaterialPriceDto implements Serializable {
     private Integer id;
 
     private Integer materialId;

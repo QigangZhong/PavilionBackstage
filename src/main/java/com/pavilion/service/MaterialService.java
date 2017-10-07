@@ -24,4 +24,6 @@ public interface MaterialService {
     int updateMaterial(Material mtl);
 
     int deleteById(int id);
+
+    boolean importExcelData();
 }

@@ -1,9 +1,7 @@
 package com.pavilion.dao;
 
 import com.pavilion.model.MaterialPrice;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -27,5 +25,7 @@ public interface MaterialPriceMapper {
     @Insert("insert into material_price \n" +
             "(material_id,unit,price,create_time,last_update_time,deleted) \n" +
             "values(#{materialId},#{unit},#{price},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),0)")
+    @SelectKey(statement = "SELECT last_insert_rowid();",keyColumn = "id",keyProperty = "id",before = false,resultType = Integer.class)
+    @Options(useGeneratedKeys = true,keyProperty = "id",keyColumn = "id")
     int add(MaterialPrice mp);
 }
