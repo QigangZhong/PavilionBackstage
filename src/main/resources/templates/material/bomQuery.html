@@ -18,7 +18,7 @@
         });
 
         $("#totalPrice").html('<i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i>');
-        $.get("/material/getTotalPrice",function (data) {
+        $.get("/material/getTotalPrice?t="+new Date().getTime(),function (data) {
             $("#totalPrice").html("总价:"+data);
         });
     </script>
@@ -60,7 +60,7 @@
         table.render({
             id:'mtlTableId',
             elem:'#mtlTable',
-            url:'/material/query',
+            url:'/material/query?t='+new Date().getTime(),
             //height:500,
             width:946,
             page:true,
@@ -114,7 +114,8 @@
                         cpscode: $('#cpscode').val(),
                         cinvname: $('#cinvname').val(),
                         cinvstd: $('#cinvstd').val(),
-                        type: $('#type').val()
+                        type: $('#type').val(),
+                        random:Date.parse(new Date())
                     }
                 });
             }
