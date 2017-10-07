@@ -53,7 +53,7 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree" lay-filter="test1">
+            <!--<ul class="layui-nav layui-nav-tree" lay-filter="test1">
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">用户管理</a>
                     <dl class="layui-nav-child">
@@ -71,7 +71,18 @@
                         <dd id="menu5"><a href="javascript:createTab('material_calcWorkTime','/material/calcWorkTime','计算工时');">工时计算</a></dd>
                     </dl>
                 </li>
+            </ul>-->
+
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" th:each="menu1:${menuList}">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;" th:text="${menu1.name}"></a>
+                    <dl class="layui-nav-child" th:each="menu2:${menu1.children}">
+                        <dd><a href="javascript:;" th:onclick="'javascript:createTab(\'menu'+${menu2.id}+'\',\''+${menu2.url}+'\',\''+${menu2.name}+'\');'" th:text="${menu2.name}"></a></dd>
+                    </dl>
+                </li>
             </ul>
+
         </div>
     </div>
 

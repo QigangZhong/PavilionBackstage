@@ -47,11 +47,36 @@ create table menu
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   url varchar(128),
   method varchar(10),
+  name nvarchar(50),
   description nvarchar(128),
+  show int not null default 0,
+  parent_id INTEGER,
+  level int,
   create_time datetime,
   last_update_time datetime
 );
-insert into menu values(null,'/upload','get','上传文件',datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'));
+insert into menu (url, method, name, description, show, parent_id, level, create_time, last_update_time)
+VALUES ('','','用户管理','用户管理一级菜单-需要管理员权限',1,0,1,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+insert into menu (url, method, name, description, show, parent_id, level, create_time, last_update_time)
+VALUES ('','','材料管理','材料管理一级菜单',1,0,1,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+
+insert into menu (url, method, name, description, show, parent_id, level, create_time, last_update_time)
+VALUES ('/user/query','get','用户查询','用户管理二级菜单-需要管理员权限',1,1,2,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+insert into menu (url, method, name, description, show, parent_id, level, create_time, last_update_time)
+VALUES ('/user/add','get','用户添加','用户管理二级菜单-需要管理员权限',1,1,2,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+
+insert into menu (url, method, name, description, show, parent_id, level, create_time, last_update_time)
+VALUES ('/material/bomQuery','get','BOM查询','材料管理二级菜单',1,2,2,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+insert into menu (url, method, name, description, show, parent_id, level, create_time, last_update_time)
+VALUES ('/material/bomMaintain','get','BOM维护','材料管理二级菜单-需要管理员权限',1,2,2,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+insert into menu (url, method, name, description, show, parent_id, level, create_time, last_update_time)
+VALUES ('/material/calcWorkTime','get','工时计算','材料管理二级菜单-需要管理员权限',1,2,2,datetime(current_timestamp,'localtime'),datetime(current_timestamp,'localtime'));
+
+
+
+
+
+
 
 create table role_menu
 (

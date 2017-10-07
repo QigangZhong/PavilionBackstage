@@ -49,11 +49,6 @@ public class UserController {
     @Autowired
     UserRoleService userRoleService;
 
-    @RequestMapping("/user/getUserNameById")
-    public String getUserNameById(){
-        return userService.getUserById(2).getUsername();
-    }
-
     @RequestMapping(value = "/user/login", method = RequestMethod.GET)
     public String login(){
         return "user/login";
