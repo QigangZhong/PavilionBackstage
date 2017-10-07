@@ -28,9 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -367,5 +366,40 @@ public class MaterialController {
             return Result.fail("上传失败,"+ ex.getMessage());
         }
         return Result.success("上传成功");
+    }
+
+    @RequestMapping(value = "/downloadSampleExcel", method = RequestMethod.GET)
+    public void downloadSampleExcel(HttpServletResponse resp) throws IOException {
+        File file = new File("sample.xlsx");
+        if(!file.exists()){
+            logger.error("示例Excel文件没有找到:"+file.getAbsolutePath());
+            return;
+        }
+        resp.setHeader("content-type", "application/octet-stream");
+        resp.setContentType("application/octet-stream");
+        resp.setHeader("Content-Disposition", "attachment;filename=sample.xlsx");
+        byte[] buff = new byte[1024];
+        BufferedInputStream bis = null;
+        OutputStream os = null;
+        try {
+            os = resp.getOutputStream();
+            bis = new BufferedInputStream(new FileInputStream(file));
+            int i = bis.read(buff);
+            while (i != -1) {
+                os.write(buff, 0, buff.length);
+                os.flush();
+                i = bis.read(buff);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

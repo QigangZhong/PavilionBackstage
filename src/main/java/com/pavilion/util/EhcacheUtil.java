@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import java.net.URL;
+import java.util.List;
 
 public class EhcacheUtil {
     Logger logger= LoggerFactory.getLogger(EhcacheUtil.class);
@@ -61,5 +62,7 @@ public class EhcacheUtil {
     public void removeAll(){
         Cache cache = manager.getCache(cacheName);
         cache.removeAll();
+
+        List<String> keys=cache.getKeys();
     }
 }

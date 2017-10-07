@@ -67,14 +67,20 @@
     <button class="layui-btn" data-type="addMtl"><i class="layui-icon"></i></button>
 </div>
 
-<div class="layui-upload-drag" id="uploadExcel">
+
+<div class="layui-upload-drag layui-inline" id="uploadExcel">
     <i class="layui-icon"></i>
     <div style="text-align: left">
         <p>1. 点击上传或拖拽excel到此处批量导入数据</p>
         <p>2. 限制xls/xlsx格式, 大小10M以内</p>
-        <p>3. 导入数据格式请参考示例文件</p>
+        <p>3. 导入数据格式请参考示例文件, 子件编码重复的数据只会导入一次</p>
     </div>
 </div>
+<div clas="layui-inline">
+    <i class="layui-icon" ></i>
+    <a href="/material/downloadSampleExcel">点击下载示例Excel</a>
+</div>
+
 
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script>
