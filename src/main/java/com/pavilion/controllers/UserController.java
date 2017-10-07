@@ -388,20 +388,14 @@ public class UserController {
         return Result.success("密码重置成功",newPwd);
     }
 
-
-    @RequestMapping(value="/user/editRole", method = RequestMethod.GET)
-    public String editRole(int userId){
-        return "user/editRole";
-    }
-
-    @RequestMapping(value="/user/editRole", method = RequestMethod.POST)
+    @RequestMapping(value="/user/isLogin", method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> editRole(int userId,int[] roleIds){
+    public Result<String> isLogin(HttpServletRequest request){
+        User user=(User) request.getSession().getAttribute("user");
+        if(user!=null && user.getId()>0){
+            return Result.success("用户已登录");
+        }
 
-
-        return Result.success("修改成功","");
+        return Result.fail("用户尚未登录");
     }
-
-
-
 }

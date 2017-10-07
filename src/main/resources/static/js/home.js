@@ -60,6 +60,18 @@ $(function () {
             });
         });
     });
+
+    $.get("/user/isLogin",function (data) {
+        if(!data || data.code!=0){
+            $.get("/user/login",function (data) {
+                layer.open({
+                    type: 1,
+                    title:"请登录",
+                    content: data
+                });
+            });
+        }
+    });
 });
 
 function createTab(iframeId, srcUrl, title) {
