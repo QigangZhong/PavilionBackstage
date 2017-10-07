@@ -13,6 +13,7 @@ import com.pavilion.service.MaterialService;
 import com.pavilion.util.EhcacheUtil;
 import com.pavilion.util.FileUtil;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.time.LocalDateTime;
@@ -369,37 +371,31 @@ public class MaterialController {
     }
 
     @RequestMapping(value = "/downloadSampleExcel", method = RequestMethod.GET)
-    public void downloadSampleExcel(HttpServletResponse resp) throws IOException {
+    public void downloadSampleExcel(HttpServletRequest req,HttpServletResponse resp) throws IOException {
         File file = new File("sample.xlsx");
         if(!file.exists()){
             logger.error("示例Excel文件没有找到:"+file.getAbsolutePath());
             return;
         }
-        resp.setHeader("content-type", "application/octet-stream");
-        resp.setContentType("application/octet-stream");
-        resp.setHeader("Content-Disposition", "attachment;filename=sample.xlsx");
-        byte[] buff = new byte[1024];
-        BufferedInputStream bis = null;
-        OutputStream os = null;
+
+        String mimeType = req.getServletContext().getMimeType(file.getAbsolutePath());
+        if (mimeType == null) {
+            mimeType = "application/octet-stream";
+        }
+
+        resp.setContentType(mimeType);
+        resp.setContentLength((int)file.length());
+        resp.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",file.getName()));
+        InputStream inputStream=null;
         try {
-            os = resp.getOutputStream();
-            bis = new BufferedInputStream(new FileInputStream(file));
-            int i = bis.read(buff);
-            while (i != -1) {
-                os.write(buff, 0, buff.length);
-                os.flush();
-                i = bis.read(buff);
-            }
-        } catch (IOException e) {
+            inputStream = new FileInputStream(file.getAbsolutePath());
+            IOUtils.copy(inputStream, resp.getOutputStream());
+            resp.flushBuffer();
+        } catch (Exception e) {
+            logger.error(e.toString());
             e.printStackTrace();
-        } finally {
-            if (bis != null) {
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        }finally {
+            inputStream.close();
         }
     }
 }

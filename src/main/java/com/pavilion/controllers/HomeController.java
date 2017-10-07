@@ -9,4 +9,9 @@ public class HomeController {
     public String index(){
         return "home/index";
     }
+
+    @RequestMapping("/home/right")
+    public String body(){
+        return "home/right";
+    }
 }
