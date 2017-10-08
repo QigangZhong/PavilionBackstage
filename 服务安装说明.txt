@@ -1,0 +1,31 @@
+服务安装说明:
+1. 服务器需要安装jdk1.8, 确保已经配置java环境变量, 如果不会,请参考下面步骤
+http://jingyan.baidu.com/article/84b4f56598d88b60f7da3272.html
+
+2. 将当前目录所有文件copy至服务器磁盘, 例如D:\PavilionBackstage
+
+3. 打开命令行窗口,CTRL+R >> cmd
+C:\Windows\system32>D:
+D:\>cd PavilionBackstage
+
+4. 执行服务安装命令pb.exe install
+D:\PavilionBackstage>PavilionBackstage.exe install
+2017-10-08 10:23:39,837 INFO  - Installing the service with id 'PavilionBackstage'
+
+5. 启动服务
+net start PavilionBackstage
+或者CTRL+R > 输入services.msc > 进入系统服务列表,点击名称为PavilionBackstage的服务，选择启动
+
+6. 停止服务
+net stop PavilionBackstage
+或者CTRL+R > 输入services.msc > 进入系统服务列表,点击名称为PavilionBackstage的服务，选择停止
+
+7. 卸载服务
+PavilionBackstage.exe uninstall
+
+8. 服务默认端口8080, 如果服务器上有端口冲突， 可以修改配置文件PavilionBackstage.xml中的端口号
+
+9. 服务启动成功后，浏览器访问本机http://localhost:8080/查看是否正常, 如果访问异常，可以查看logs目录已经根目录下的log跟踪问题
+
+10. 从内网其他机器访问http://服务器IP:8080/, 看是否正常, 如果访问不通，需要排查防火墙，网络等问题
+
