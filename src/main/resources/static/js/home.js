@@ -88,11 +88,11 @@ function createTab(iframeId, srcUrl, title) {
     //新增一个Tab项
     element.tabAdd('tabHead', {
         title: title
-        ,content: '<iframe id="'+iframeId+'" src="'+srcUrl+'"></iframe>'
+        ,content: '<object type="text/html" data="'+srcUrl+'" width="100%" height="100%"></object>'
         ,id: tabId
     });
 
-    setIframeHeight(iframeId);
+    //setIframeHeight(iframeId);
 
     element.init();
     //切换到指定Tab项
